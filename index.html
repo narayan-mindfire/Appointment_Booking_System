@@ -4,50 +4,38 @@
   <meta charset="UTF-8" />
   <meta id="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Appointment Booking System</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <h1 class="main-heading">Appointment Booking System</h1>
 
-  <!-- Header -->
   <div class="head-area">
-    <h3>Total Appointments: <span id="total-appointments">42</span></h3>
+    <h3>Total Appointments: <span id="total-appointments">0</span></h3>
   </div>
 
-  <!-- Main Content -->
   <div class="content">
-    
-    <!-- Appointment Form -->
     <div class="form-container">
       <h2>📝 Appointment Form</h2>
-      <form id="myForm" onsubmit="handleForm(event)">
+      <form id="myForm">
         <label>Name:<br><input type="text" id="name" /></label><br><br>
         <label>Date:<br><input type="date" id="date" /></label><br><br>
         <label>Doctor:<br>
           <select id="doctor">
+            <option value="">Select Doctor</option>
             <option value="Dr. Amit">Dr. Amit</option>
             <option value="Dr. Rhea">Dr. Rhea</option>
           </select>
-        </label>
-        <br><br>
+        </label><br><br>
         <label>Slot:<br>
           <select id="slot">
-            <option>slot - 1</option>
-            <option>slot - 2</option>
-            <option>slot - 3</option>
+            <option value="">Select a slot</option>
           </select>
-        </label>
-        <br><br>
-        <label>Purpose:
-            <br>
-            <input type="text" id="purpose" />
-        </label>
-        <br><br>
-        <center><button class="submit-button" type="submit" onkeypress="">Book Appointment</button></center>
+        </label><br><br>
+        <label>Purpose:<br><input type="text" id="purpose" /></label><br><br>
+        <center><input class="submit-button" id="submit" type="submit" value="Book Appointment" /></center>
       </form>
     </div>
 
-    <!-- Appointments Table -->
     <div class="appointment-list">
         <h2>📅 Appointments Table</h2>
         <table>
@@ -57,19 +45,14 @@
                     <th>Doctor</th>
                     <th>Date</th>
                     <th>Slot</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
-            <tr>
-                <td>Raj</td>
-                <td>Dr. Amit</td>
-                <td>22/06</td>
-                <td>11:00</td>
-                <td><button class="edit">✏️</button><button class="delete">❌</button></td>
-            </tr>
         </table>
     </div>
-
   </div>
-  <script src = "script.js" ></script>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
