@@ -1,4 +1,21 @@
 .main-heading{
     text-align: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: yellow;
+}
+.head-area{
+    background-color: beige;
+}
+.content{
+    display: flex;
+    height: 300;
+}
+.form-container{
+    background-color: blue;
+    height: 300;
+    width: 100%;
+}
+.appointment-list{
+    background-color: green;
+    height: 300;
+    width: 100%;
 }
