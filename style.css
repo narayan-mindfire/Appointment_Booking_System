@@ -1,21 +1,69 @@
-.main-heading{
-    text-align: center;
-    background-color: yellow;
+body {
+  margin: 0;
+  padding: 0;
 }
-.head-area{
-    background-color: beige;
+
+.main-heading {
+  text-align: center;
+  background-color: yellow;
+  padding: 10px;
+  margin: 0;
 }
-.content{
-    display: flex;
-    height: 300;
+
+.head-area {
+  background-color: beige;
+  padding: 10px 20px;
 }
-.form-container{
-    background-color: blue;
-    height: 300;
-    width: 100%;
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px;
 }
-.appointment-list{
-    background-color: green;
-    height: 300;
-    width: 100%;
+
+.form-container,
+.appointment-list {
+  background-color: white;
+  padding: 20px;
+  flex: 1;
+  border: 1px solid black
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  /* padding: 10px; */
+  text-align: center;
+}
+
+tr button {
+    width: 50%;
+    height: 100%;
+    border: none;
+}
+
+.edit{
+    background-color: orange;
+}
+.delete{
+    background-color: black;
+}
+.submit-button{
+    height: 40px;
 }

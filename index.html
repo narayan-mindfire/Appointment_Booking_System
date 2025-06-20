@@ -1,31 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Appointment Booking System</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="scripts.js"></script>
-  </head>
-  <body>
-    <h1 class="main-heading">Hey there, this is a Appointment booking system</h1>
-    <!-- main body  -->
-    <div>
-        <!-- header div  -->
-        <div class="head-area">
-            <h3>Total Appointments: </h3>
-        </div>
-        <!-- main content  -->
-        <div class = "content">
-            <!-- form -->
-            <div class="form-container">
-                <h1>form container</h1>
-            </div>
-            <!-- appointment lists -->
-            <div class="appointment-list">
-                <h1>appointment list</h1>
-            </div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta id="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appointment Booking System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1 class="main-heading">Appointment Booking System</h1>
+
+  <!-- Header -->
+  <div class="head-area">
+    <h3>Total Appointments: <span id="total-appointments">42</span></h3>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    
+    <!-- Appointment Form -->
+    <div class="form-container">
+      <h2>📝 Appointment Form</h2>
+      <form id="myForm" onsubmit="handleForm(event)">
+        <label>Name:<br><input type="text" id="name" /></label><br><br>
+        <label>Date:<br><input type="date" id="date" /></label><br><br>
+        <label>Doctor:<br>
+          <select id="doctor">
+            <option value="Dr. Amit">Dr. Amit</option>
+            <option value="Dr. Rhea">Dr. Rhea</option>
+          </select>
+        </label>
+        <br><br>
+        <label>Slot:<br>
+          <select id="slot">
+            <option>slot - 1</option>
+            <option>slot - 2</option>
+            <option>slot - 3</option>
+          </select>
+        </label>
+        <br><br>
+        <label>Purpose:
+            <br>
+            <input type="text" id="purpose" />
+        </label>
+        <br><br>
+        <center><button class="submit-button" type="submit" onkeypress="">Book Appointment</button></center>
+      </form>
     </div>
-  </body>
+
+    <!-- Appointments Table -->
+    <div class="appointment-list">
+        <h2>📅 Appointments Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Slot</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Raj</td>
+                <td>Dr. Amit</td>
+                <td>22/06</td>
+                <td>11:00</td>
+                <td><button class="edit">✏️</button><button class="delete">❌</button></td>
+            </tr>
+        </table>
+    </div>
+
+  </div>
+  <script src = "script.js" ></script>
+</body>
 </html>
