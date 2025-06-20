@@ -66,3 +66,9 @@ tr button {
 .submit-button{
     height: 40px;
 }
+
+@media (max-width: 700px) {
+  .content {
+    flex-direction: column;
+  }
+}

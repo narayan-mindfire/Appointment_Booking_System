@@ -1,15 +1,18 @@
 const form = document.getElementById('myForm');
 let editingAppointmentId = null;
 
-// Attaching form submit handler
-form.addEventListener('submit', handleForm);
+// setting four time slots
+const slots = ["10:00", "11:00", "12:00", "1:00"];
 
-// Loading appointments on page load
+form.addEventListener('submit', handleForm);
+document.getElementById("doctor").addEventListener("change", updateAvailableSlots);
+document.getElementById("date").addEventListener("change", updateAvailableSlots);
+
+// fetching local storage data upon load/reload
 reloadAppointmentList();
 
-// Handling form submission
 function handleForm(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const name = document.getElementById("name").value;
     const date = document.getElementById("date").value;
@@ -26,7 +29,6 @@ function handleForm(event) {
     appointments = appointments ? JSON.parse(appointments) : [];
 
     if (editingAppointmentId) {
-        // Update existing appointment
         const index = appointments.findIndex(app => app.id === editingAppointmentId);
         if (index !== -1) {
             appointments[index] = {
@@ -41,7 +43,6 @@ function handleForm(event) {
         editingAppointmentId = null;
         document.getElementById("submit").value = "Book Appointment";
     } else {
-        // Create new appointment
         const appointment = {
             id: Date.now(),
             name,
@@ -55,10 +56,10 @@ function handleForm(event) {
 
     localStorage.setItem('appointments', JSON.stringify(appointments));
     form.reset();
+    updateAvailableSlots();
     reloadAppointmentList();
 }
 
-// Saving appointment to table
 function addAppointmentToList(appointment) {
     const table = document.querySelector(".appointment-list table");
     const row = document.createElement("tr");
@@ -70,16 +71,16 @@ function addAppointmentToList(appointment) {
         <td>${appointment.doctor}</td>
         <td>${appointment.date}</td>
         <td>${appointment.slot}</td>
-        <td><button class="edit">✏️</button></td>
-        <td><button class="delete">❌</button></td>
+        <td><button class="edit">✏️</button>
+            <button class="delete">❌</button>
+        </td>
     `;
 
-    // Delete button
+    // adding click event listeners on deletion and edit buttons
     row.querySelector(".delete").addEventListener("click", () => {
         deleteAppointment(appointment.id);
     });
 
-    // Edit button
     row.querySelector(".edit").addEventListener("click", () => {
         editAppointment(appointment.id);
     });
@@ -87,7 +88,7 @@ function addAppointmentToList(appointment) {
     table.appendChild(row);
 }
 
-// Deleteting the appointment
+// deleting appointment
 function deleteAppointment(id) {
     let appointments = localStorage.getItem('appointments');
     appointments = appointments ? JSON.parse(appointments) : [];
@@ -97,7 +98,7 @@ function deleteAppointment(id) {
     reloadAppointmentList();
 }
 
-// Editing appointment
+// edit functionality
 function editAppointment(id) {
     let appointments = localStorage.getItem('appointments');
     appointments = appointments ? JSON.parse(appointments) : [];
@@ -108,21 +109,23 @@ function editAppointment(id) {
     document.getElementById("name").value = appointment.name;
     document.getElementById("date").value = appointment.date;
     document.getElementById("doctor").value = appointment.doctor;
+    // setting the edit id for changing button text
+    editingAppointmentId = id;
+    
+    updateAvailableSlots();
     document.getElementById("slot").value = appointment.slot;
     document.getElementById("purpose").value = appointment.purpose;
     document.getElementById("submit").value = "Update Appointment";
-
-    editingAppointmentId = id;
 }
 
-// Updating appointment count
+// total appointment count
 function updateAppointmentCount() {
     let appointments = localStorage.getItem('appointments');
     appointments = appointments ? JSON.parse(appointments) : [];
     document.getElementById("total-appointments").textContent = appointments.length;
 }
 
-// Clearing and reloading the full appointment list
+// reloading appointment list
 function reloadAppointmentList() {
     const table = document.querySelector(".appointment-list table");
     table.innerHTML = `
@@ -131,8 +134,7 @@ function reloadAppointmentList() {
             <th>Doctor</th>
             <th>Date</th>
             <th>Slot</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>activity</th>
         </tr>
     `;
 
@@ -141,4 +143,33 @@ function reloadAppointmentList() {
 
     appointments.forEach(app => addAppointmentToList(app));
     updateAppointmentCount();
+}
+
+// slot availability updation
+function updateAvailableSlots() {
+    const date = document.getElementById("date").value;
+    const doctor = document.getElementById("doctor").value;
+    const slotSelect = document.getElementById("slot");
+
+    slotSelect.innerHTML = '<option value="">Select a slot</option>';
+
+    if (!date || !doctor) return;
+
+    let appointments = localStorage.getItem('appointments');
+    appointments = appointments ? JSON.parse(appointments) : [];
+
+    // checking for booked slots
+    const bookedSlots = appointments
+        .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
+        .map(app => app.slot);
+
+    const availableSlots = slots.filter(slot => !bookedSlots.includes(slot));
+
+    // setting available slots in the ui
+    availableSlots.forEach(slot => {
+        const option = document.createElement("option");
+        option.value = slot;
+        option.textContent = slot;
+        slotSelect.appendChild(option);
+    });
 }
