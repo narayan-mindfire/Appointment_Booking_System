@@ -20,11 +20,33 @@ function handleForm(event) {
     const slot = document.getElementById("slot").value;
     const purpose = document.getElementById("purpose").value;
 
-    if (!name || !date || !doctor || !slot || !purpose) {
-        alert("Please enter all the data");
+    let isValid = true;
+
+    // Reset error messages
+    resetErrorMessages();
+
+    // showing error messages individually
+    if (!name) {
+        isValid = false;
+        document.getElementById("name-error").textContent = "Name is required.";
+    }
+    if (!date) {
+        isValid = false;
+        document.getElementById("date-error").textContent = "Date is required.";
+    }
+    if (!doctor) {
+        isValid = false;
+        document.getElementById("doctor-error").textContent = "Doctor selection is required.";
+    }
+    if (!slot) {
+        isValid = false;
+        document.getElementById("slot-error").textContent = "Slot selection is required.";
+    }
+    if (!isValid) {
         return;
     }
 
+    // Save or update appointment
     let appointments = localStorage.getItem('appointments');
     appointments = appointments ? JSON.parse(appointments) : [];
 
@@ -60,6 +82,13 @@ function handleForm(event) {
     reloadAppointmentList();
 }
 
+function resetErrorMessages() {
+    const errorMessages = document.querySelectorAll(".error-message");
+    errorMessages.forEach(message => message.textContent = "");
+}
+
+
+// appointment list
 function addAppointmentToList(appointment) {
     const table = document.querySelector(".appointment-list table");
     const row = document.createElement("tr");
@@ -111,7 +140,7 @@ function editAppointment(id) {
     document.getElementById("doctor").value = appointment.doctor;
     // setting the edit id for changing button text
     editingAppointmentId = id;
-    
+
     updateAvailableSlots();
     document.getElementById("slot").value = appointment.slot;
     document.getElementById("purpose").value = appointment.purpose;
