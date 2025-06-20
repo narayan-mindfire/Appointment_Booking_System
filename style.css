@@ -48,12 +48,11 @@ table, th, td {
 }
 
 th, td {
-  /* padding: 10px; */
   text-align: center;
 }
 
 tr button {
-    width: 50%;
+    width: 100%;
     height: 100%;
     border: none;
 }
