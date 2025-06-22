@@ -11,6 +11,17 @@ document.getElementById("date").addEventListener("change", updateAvailableSlots)
 // fetching local storage data upon load/reload
 reloadAppointmentList();
 
+// fetching appointments from local storage
+function getAppointments(){
+    const data = localStorage.getItem('appointments');
+    return data ? JSON.parse(data) : [];
+}
+
+// setting the appointment list to local storage
+function setAppointments(appointments){
+    localStorage.setItem('appointments', JSON.stringify(appointments));
+}
+
 function handleForm(event) {
     event.preventDefault();
 
@@ -46,22 +57,18 @@ function handleForm(event) {
         return;
     }
 
-    // Save or update appointment
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
+    let appointments = getAppointments()
 
     if (editingAppointmentId) {
         const index = appointments.findIndex(app => app.id === editingAppointmentId);
-        if (index !== -1) {
-            appointments[index] = {
-                id: editingAppointmentId,
-                name,
-                date,
-                doctor,
-                slot,
-                purpose
-            };
-        }
+        appointments[index] = {
+            id: editingAppointmentId,
+            name,
+            date,
+            doctor,
+            slot,
+            purpose
+        };
         editingAppointmentId = null;
         document.getElementById("submit").value = "Book Appointment";
     } else {
@@ -76,61 +83,48 @@ function handleForm(event) {
         appointments.push(appointment);
     }
 
-    localStorage.setItem('appointments', JSON.stringify(appointments));
+    setAppointments(appointments)
     form.reset();
     updateAvailableSlots();
     reloadAppointmentList();
 }
 
+// function to reset error messages
 function resetErrorMessages() {
     const errorMessages = document.querySelectorAll(".error-message");
     errorMessages.forEach(message => message.textContent = "");
 }
 
-
 // appointment list
 function addAppointmentToList(appointment) {
-    const table = document.querySelector(".appointment-list table");
-    const row = document.createElement("tr");
-
-    row.setAttribute("data-id", appointment.id);
-
-    row.innerHTML = `
-        <td>${appointment.name}</td>
-        <td>${appointment.doctor}</td>
-        <td>${appointment.date}</td>
-        <td>${appointment.slot}</td>
-        <td><button class="edit">✏️</button>
-            <button class="delete">❌</button>
-        </td>
-    `;
-
-    // adding click event listeners on deletion and edit buttons
-    row.querySelector(".delete").addEventListener("click", () => {
-        deleteAppointment(appointment.id);
-    });
-
-    row.querySelector(".edit").addEventListener("click", () => {
-        editAppointment(appointment.id);
-    });
-
-    table.appendChild(row);
+  const tbody = document.getElementById("appointment-body");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${appointment.name}</td>
+    <td>${appointment.doctor}</td>
+    <td>${appointment.date}</td>
+    <td>${appointment.slot}</td>
+    <td>
+      <button class="edit">✏️</button>
+      <button class="delete">❌</button>
+    </td>
+  `;
+  row.querySelector(".delete").addEventListener("click", () => deleteAppointment(appointment.id));
+  row.querySelector(".edit").addEventListener("click", () => editAppointment(appointment.id));
+  tbody.appendChild(row);
 }
 
 // deleting appointment
 function deleteAppointment(id) {
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
-
-    appointments = appointments.filter(app => app.id !== id);
-    localStorage.setItem('appointments', JSON.stringify(appointments));
+    let appointments = getAppointments();
+    setAppointments(appointments.filter(app => app.id !== id));
     reloadAppointmentList();
 }
 
 // edit functionality
 function editAppointment(id) {
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
+    editingAppointmentId = id;
+    let appointments = getAppointments()
 
     const appointment = appointments.find(app => app.id === id);
     if (!appointment) return;
@@ -138,9 +132,6 @@ function editAppointment(id) {
     document.getElementById("name").value = appointment.name;
     document.getElementById("date").value = appointment.date;
     document.getElementById("doctor").value = appointment.doctor;
-    // setting the edit id for changing button text
-    editingAppointmentId = id;
-
     updateAvailableSlots();
     document.getElementById("slot").value = appointment.slot;
     document.getElementById("purpose").value = appointment.purpose;
@@ -149,27 +140,16 @@ function editAppointment(id) {
 
 // total appointment count
 function updateAppointmentCount() {
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
+    let appointments = getAppointments()
     document.getElementById("total-appointments").textContent = appointments.length;
 }
 
 // reloading appointment list
 function reloadAppointmentList() {
-    const table = document.querySelector(".appointment-list table");
-    table.innerHTML = `
-        <tr>
-            <th>Name</th>
-            <th>Doctor</th>
-            <th>Date</th>
-            <th>Slot</th>
-            <th>activity</th>
-        </tr>
-    `;
+    const tbody = document.getElementById("appointment-body");
+    tbody.innerHTML = "";
 
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
-
+    let appointments = getAppointments();
     appointments.forEach(app => addAppointmentToList(app));
     updateAppointmentCount();
 }
@@ -184,8 +164,7 @@ function updateAvailableSlots() {
 
     if (!date || !doctor) return;
 
-    let appointments = localStorage.getItem('appointments');
-    appointments = appointments ? JSON.parse(appointments) : [];
+    let appointments = getAppointments();
 
     // checking for booked slots
     const bookedSlots = appointments
