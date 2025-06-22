@@ -120,6 +120,8 @@ function addAppointmentToList(appointment) {
 
 // deleting appointment
 function deleteAppointment(id) {
+    const confirmed = confirm("Are you sure you want to delete this appointment?");
+    if (!confirmed) return;
     let appointments = getAppointments();
     setAppointments(appointments.filter(app => app.id !== id));
     reloadAppointmentList();
