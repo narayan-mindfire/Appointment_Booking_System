@@ -61,16 +61,20 @@ function handleForm(event) {
 
     if (editingAppointmentId) {
         const index = appointments.findIndex(app => app.id === editingAppointmentId);
-        appointments[index] = {
-            id: editingAppointmentId,
-            name,
-            date,
-            doctor,
-            slot,
-            purpose
-        };
-        editingAppointmentId = null;
-        document.getElementById("submit").value = "Book Appointment";
+        if(index !== -1){
+            appointments[index] = {
+                id: editingAppointmentId,
+                name,
+                date,
+                doctor,
+                slot,
+                purpose
+            };
+            editingAppointmentId = null;
+            document.getElementById("submit").value = "Book Appointment";
+        }else{
+            alert("Appointment you're editing no longer exists, please create a new one")
+        }
     } else {
         const appointment = {
             id: Date.now(),
