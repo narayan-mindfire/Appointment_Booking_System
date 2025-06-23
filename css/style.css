@@ -30,11 +30,14 @@ body {
   border: 1px solid black
 }
 
-form input,
 form select {
   width: 100%;
   padding: 5px;
   margin-top: 5px;
+}
+form input{
+  width: 100%;
+  padding: 0px;
 }
 
 table {

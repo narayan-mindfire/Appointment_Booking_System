@@ -120,6 +120,8 @@ function addAppointmentToList(appointment) {
 
 // deleting appointment
 function deleteAppointment(id) {
+    const confirmed = confirm("Are you sure you want to delete this appointment?");
+    if (!confirmed) return;
     let appointments = getAppointments();
     setAppointments(appointments.filter(app => app.id !== id));
     reloadAppointmentList();
@@ -156,6 +158,24 @@ function reloadAppointmentList() {
     let appointments = getAppointments();
     appointments.forEach(app => addAppointmentToList(app));
     updateAppointmentCount();
+
+    // setting the date input to enable only available dates (from current day onwards)
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; 
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+    dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+    mm = '0' + mm;
+    } 
+        
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("date").setAttribute("min", today);
+
 }
 
 // slot availability updation
@@ -175,9 +195,19 @@ function updateAvailableSlots() {
         .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
         .map(app => app.slot);
 
-    const availableSlots = slots.filter(slot => !bookedSlots.includes(slot));
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0];
+    const currentTime = currentDate.getHours() + ":" + (currentDate.getMinutes() < 10 ? "0" + currentDate.getMinutes() : currentDate.getMinutes());
 
-    // setting available slots in the ui
+    const availableSlots = slots.filter(slot => {
+        if (date === currentDateString) {
+            return !bookedSlots.includes(slot) && isSlotAvailable(slot, currentTime);
+        } else {
+            return !bookedSlots.includes(slot);
+        }
+    });
+
+    // setting available slots in the UI
     availableSlots.forEach(slot => {
         const option = document.createElement("option");
         option.value = slot;
@@ -185,3 +215,19 @@ function updateAvailableSlots() {
         slotSelect.appendChild(option);
     });
 }
+
+
+function isSlotAvailable(slot, currentTime) {
+    // If the slot is later than the current time, it's available
+    const [slotHour, slotMinute] = slot.split(":").map(Number);
+    const [currentHour, currentMinute] = currentTime.split(":").map(Number);
+
+    if (slotHour > currentHour) {
+        return true; 
+    } else if (slotHour === currentHour && slotMinute > currentMinute) {
+        return true;
+    }
+
+    return false;
+}
+
