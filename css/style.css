@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -62,7 +66,7 @@ form select:focus {
   border-width: 2px;
 }
 
-.doc-options{
+.doc-options {
   max-height: 200px;
   position: relative;
   margin-top: 5px;
@@ -74,9 +78,15 @@ form select:focus {
   display: none;
 }
 
-.doctor-option{
-  padding: 3px;
-  font-size: 17;
+.doctor-option {
+  padding: 5px;
+  font-size: 17px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.doctor-option:hover {
+  background-color: #c5c4c4;
 }
 
 .submit-button {
@@ -94,6 +104,7 @@ form select:focus {
   background-color: #333;
 }
 
+/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -119,16 +130,20 @@ tr button {
   padding: 5px;
   background-color: #000;
   color: #fff;
-  border: none;
-  cursor: pointer;
-  /* margin: 5px; */
+  border-radius: 5px;
+  margin: 5px;
+  font-size: 17px;
 }
 
 tr button:hover {
   background-color: #555353;
 }
 
-#required-name, #required-date, #required-doctor, #required-slot, #required-purpose {
+#required-name,
+#required-date,
+#required-doctor,
+#required-slot,
+#required-purpose {
   color: red;
   font-weight: bold;
 }
@@ -140,7 +155,11 @@ tr button:hover {
   display: block;
 }
 
-@media (max-width: 900px) {
+.appointment-cards {
+  display: none;
+}
+
+@media (max-width: 768px) {
   .content {
     flex-direction: column;
     padding: 15px;
@@ -149,5 +168,59 @@ tr button:hover {
   .form-container,
   .appointment-list {
     flex: 1 1 100%;
+  }
+
+  table {
+    display: none; 
+  }
+
+  .appointment-cards {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 15px; 
+    max-width: 100%;
+  }
+
+  .appointment-card {
+    min-width: 60%; 
+    max-width: 300px;
+    flex-shrink: 0; 
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    scroll-snap-align: start; 
+  }
+
+  .appointment-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+  }
+
+  .appointment-card p {
+    margin: 5px 0;
+    font-size: 15px;
+  }
+
+  .appointment-card .card-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .appointment-card button {
+    padding: 6px 10px;
+    font-size: 14px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .appointment-card button:hover {
+    background-color: #333;
   }
 }
