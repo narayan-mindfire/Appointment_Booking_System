@@ -4,6 +4,23 @@ let editingAppointmentId = null;
 // setting four time slots
 const slots = ["10:00", "11:00", "12:00", "1:00"];
 
+// setting the date input to enable only available dates (from current day onwards)
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth() + 1; 
+var yyyy = today.getFullYear();
+
+if (dd < 10) {
+dd = '0' + dd;
+}
+
+if (mm < 10) {
+mm = '0' + mm;
+} 
+    
+today = yyyy + '-' + mm + '-' + dd;
+document.getElementById("date").setAttribute("min", today);
+
 form.addEventListener('submit', handleForm);
 document.getElementById("doctor").addEventListener("change", updateAvailableSlots);
 document.getElementById("date").addEventListener("change", updateAvailableSlots);
@@ -158,24 +175,6 @@ function reloadAppointmentList() {
     let appointments = getAppointments();
     appointments.forEach(app => addAppointmentToList(app));
     updateAppointmentCount();
-
-    // setting the date input to enable only available dates (from current day onwards)
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; 
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-    dd = '0' + dd;
-    }
-
-    if (mm < 10) {
-    mm = '0' + mm;
-    } 
-        
-    today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("date").setAttribute("min", today);
-
 }
 
 // slot availability updation
@@ -218,7 +217,6 @@ function updateAvailableSlots() {
         slotSelect.innerHTML = '<option value="">No slots available</option>';
     }
 }
-
 
 function isSlotAvailable(slot) {
     // If the slot is later than the current time, it's available

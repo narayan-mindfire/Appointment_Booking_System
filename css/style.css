@@ -1,85 +1,114 @@
 body {
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
 .main-heading {
   text-align: center;
-  background-color: yellow;
-  padding: 10px;
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  font-size: 28px;
   margin: 0;
 }
 
 .head-area {
-  background-color: beige;
-  padding: 10px 20px;
+  background-color: #fff;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
 }
 
 .content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  padding: 20px;
   gap: 20px;
+  padding: 30px;
+  background-color: #000;
 }
 
 .form-container,
 .appointment-list {
-  background-color: white;
-  padding: 20px;
-  flex: 1;
-  border: 1px solid black
+  background-color: #fff;
+  padding: 25px;
+  flex: 1 1 45%;
+  border-radius: 10px;
 }
 
+form label.form-label {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+form input,
 form select {
   width: 100%;
-  padding: 5px;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #908f8f;
+  border-radius: 5px;
+  box-sizing: border-box;
   margin-top: 5px;
 }
-form input{
+
+form input:focus,
+form select:focus {
+  outline: none;
+  border-color: #000;
+  border-width: 2px;
+}
+
+.submit-button {
   width: 100%;
-  padding: 0px;
+  height: 45px;
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #333;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-table, th, td {
-  border: 1px solid black;
-}
-
-th, td {
+table th,
+table td {
+  border: 1px solid #424242;
+  padding: 12px;
   text-align: center;
+  font-size: 14px;
+}
+
+th {
+  color: #fff;
+  background-color: #000;
+  font-weight: bold;
 }
 
 tr button {
-    width: 100%;
-    height: 100%;
-    border: none;
+  width: 100%;
+  padding: 5px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  /* margin: 5px; */
 }
 
-.edit{
-    background-color: brown;
-}
-.delete{
-    background-color: black;
-}
-.submit-button{
-    height: 40px;
-}
-
-@media (max-width: 900px) {
-  .content {
-    flex-direction: column;
-  }
-}
-
-@media (min-width: 901px) {
-  .content {
-    flex-direction: row;
-  }
+tr button:hover {
+  background-color: #555353;
 }
 
 .required {
@@ -89,5 +118,19 @@ tr button {
 
 .error-message {
   color: red;
-  font-size: 12px;
+  font-size: 13px;
+  margin-top: -10px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .form-container,
+  .appointment-list {
+    flex: 1 1 100%;
+  }
 }
