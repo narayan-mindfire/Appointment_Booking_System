@@ -1,3 +1,4 @@
+import { validationConfig } from "./validationConfig.js";
 const form = document.getElementById('myForm');
 let editingAppointmentId = null;
 
@@ -17,6 +18,23 @@ dd = '0' + dd;
 if (mm < 10) {
 mm = '0' + mm;
 } 
+
+// setting an asteric(*) symbol for required fields based on validation configuration
+const fields = {
+        name: document.getElementById("name").value.trim(),
+        date: document.getElementById("date").value.trim(),
+        doctor: document.getElementById("doctor").value,
+        slot: document.getElementById("slot").value,
+        purpose: document.getElementById("purpose").value.trim()
+};
+
+for (let field in fields) {
+    const isRequired = validationConfig[field];
+    const asteric = document.getElementById(`required-${field}`);
+    if (isRequired) {
+        asteric.textContent = `*`;
+    }
+}
     
 today = yyyy + '-' + mm + '-' + dd;
 document.getElementById("date").setAttribute("min", today);
@@ -42,73 +60,59 @@ function setAppointments(appointments){
 function handleForm(event) {
     event.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const date = document.getElementById("date").value;
-    const doctor = document.getElementById("doctor").value;
-    const slot = document.getElementById("slot").value;
-    const purpose = document.getElementById("purpose").value;
+    const fields = {
+        name: document.getElementById("name").value.trim(),
+        date: document.getElementById("date").value.trim(),
+        doctor: document.getElementById("doctor").value,
+        slot: document.getElementById("slot").value,
+        purpose: document.getElementById("purpose").value.trim()
+    };
 
     let isValid = true;
-
-    // Reset error messages
     resetErrorMessages();
 
-    // showing error messages individually
-    if (!name) {
-        isValid = false;
-        document.getElementById("name-error").textContent = "Name is required.";
+    for (let field in fields) {
+        const isRequired = validationConfig[field];
+        const value = fields[field];
+        const errorElement = document.getElementById(`${field}-error`);
+        if (isRequired && !value) {
+            isValid = false;
+            if (errorElement) {
+                errorElement.textContent = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
+            }
+        }
     }
-    if (!date) {
-        isValid = false;
-        document.getElementById("date-error").textContent = "Date is required.";
-    }
-    if (!doctor) {
-        isValid = false;
-        document.getElementById("doctor-error").textContent = "Doctor selection is required.";
-    }
-    if (!slot) {
-        isValid = false;
-        document.getElementById("slot-error").textContent = "Slot selection is required.";
-    }
-    if (!isValid) {
-        return;
-    }
+    if (!isValid) return;
 
-    let appointments = getAppointments()
+    let appointments = getAppointments();
 
     if (editingAppointmentId) {
         const index = appointments.findIndex(app => app.id === editingAppointmentId);
-        if(index !== -1){
+        if (index !== -1) {
             appointments[index] = {
                 id: editingAppointmentId,
-                name,
-                date,
-                doctor,
-                slot,
-                purpose
+                ...fields
             };
             editingAppointmentId = null;
             document.getElementById("submit").value = "Book Appointment";
-        }else{
-            alert("Appointment you're editing no longer exists, please create a new one")
+        } else {
+            alert("Appointment you're editing no longer exists, please create a new one");
+            return;
         }
     } else {
         const appointment = {
             id: Date.now(),
-            name,
-            date,
-            doctor,
-            slot,
-            purpose
+            ...fields
         };
         appointments.push(appointment);
     }
 
-    setAppointments(appointments)
+    setAppointments(appointments);
     form.reset();
     updateAvailableSlots();
     reloadAppointmentList();
 }
+
 
 // function to reset error messages
 function resetErrorMessages() {
@@ -223,8 +227,6 @@ function isSlotAvailable(slot) {
     const slotHour = Number(slot.split(":")[0])
     const currentDate = new Date()
     const currentHour = currentDate.getHours()
-    console.log("slotHour: ", slotHour)
-    console.log("currentHour: ", currentHour)
     if (slotHour > currentHour) {
         return true; 
     }

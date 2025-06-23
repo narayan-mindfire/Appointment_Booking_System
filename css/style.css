@@ -111,7 +111,7 @@ tr button:hover {
   background-color: #555353;
 }
 
-.required {
+#required-name, #required-date, #required-doctor, #required-slot, #required-purpose {
   color: red;
   font-weight: bold;
 }
