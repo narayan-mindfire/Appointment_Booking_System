@@ -185,28 +185,27 @@ function updateAvailableSlots() {
     const slotSelect = document.getElementById("slot");
 
     slotSelect.innerHTML = '<option value="">Select a slot</option>';
-
+    
     if (!date || !doctor) return;
-
+    
     let appointments = getAppointments();
-
+    
     // checking for booked slots
     const bookedSlots = appointments
-        .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
-        .map(app => app.slot);
-
+    .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
+    .map(app => app.slot);
+    
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0];
-    const currentTime = currentDate.getHours() + ":" + (currentDate.getMinutes() < 10 ? "0" + currentDate.getMinutes() : currentDate.getMinutes());
-
+    
     const availableSlots = slots.filter(slot => {
         if (date === currentDateString) {
-            return !bookedSlots.includes(slot) && isSlotAvailable(slot, currentTime);
+            return !bookedSlots.includes(slot) && isSlotAvailable(slot);
         } else {
             return !bookedSlots.includes(slot);
         }
     });
-
+    
     // setting available slots in the UI
     availableSlots.forEach(slot => {
         const option = document.createElement("option");
@@ -214,20 +213,23 @@ function updateAvailableSlots() {
         option.textContent = slot;
         slotSelect.appendChild(option);
     });
+    
+    if(availableSlots.length === 0){
+        slotSelect.innerHTML = '<option value="">No slots available</option>';
+    }
 }
 
 
-function isSlotAvailable(slot, currentTime) {
+function isSlotAvailable(slot) {
     // If the slot is later than the current time, it's available
-    const [slotHour, slotMinute] = slot.split(":").map(Number);
-    const [currentHour, currentMinute] = currentTime.split(":").map(Number);
-
+    const slotHour = Number(slot.split(":")[0])
+    const currentDate = new Date()
+    const currentHour = currentDate.getHours()
+    console.log("slotHour: ", slotHour)
+    console.log("currentHour: ", currentHour)
     if (slotHour > currentHour) {
         return true; 
-    } else if (slotHour === currentHour && slotMinute > currentMinute) {
-        return true;
     }
-
     return false;
 }
 
