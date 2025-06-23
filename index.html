@@ -20,11 +20,9 @@
         <label class="form-label">Name:<span id="required-name"></span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
         <label class="form-label">Date:<span id="required-date"></span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
         <label class="form-label">Doctor:<span id="required-doctor"></span><br>
-          <select id="doctor">
-            <option value="">Select Doctor</option>
-            <option value="Dr. Amit">Dr. Amit</option>
-            <option value="Dr. Rhea">Dr. Rhea</option>
-          </select>
+          <input type="text" id="doctor">
+          <div class="doc-options" id="doc-options">
+          </div>
         </label><br><span class="error-message" id="doctor-error"></span><br><br>
         <label class="form-label">Slot:<span id="required-slot"></span><br>
           <select id="slot">

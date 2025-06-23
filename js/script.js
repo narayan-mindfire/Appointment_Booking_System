@@ -1,4 +1,7 @@
 import { validationConfig } from "./validationConfig.js";
+import {docs} from "./doctors.js"
+
+setDoctors()
 const form = document.getElementById('myForm');
 let editingAppointmentId = null;
 
@@ -27,6 +30,19 @@ const fields = {
         slot: document.getElementById("slot").value,
         purpose: document.getElementById("purpose").value.trim()
 };
+
+document.addEventListener('click', function(event) {
+    const doctorInput = document.getElementById("doctor");
+    const docList = document.getElementById("doc-options");
+
+    // FIXED: Check if the click is inside either the input or the dropdown
+    if (doctorInput.contains(event.target) || docList.contains(event.target)) {
+        docList.style.display = "block";
+    } else {
+        docList.style.display = "none";
+    }
+});
+
 
 for (let field in fields) {
     const isRequired = validationConfig[field];
@@ -193,7 +209,6 @@ function updateAvailableSlots() {
     
     let appointments = getAppointments();
     
-    // checking for booked slots
     const bookedSlots = appointments
     .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
     .map(app => app.slot);
@@ -209,7 +224,6 @@ function updateAvailableSlots() {
         }
     });
     
-    // setting available slots in the UI
     availableSlots.forEach(slot => {
         const option = document.createElement("option");
         option.value = slot;
@@ -223,7 +237,6 @@ function updateAvailableSlots() {
 }
 
 function isSlotAvailable(slot) {
-    // If the slot is later than the current time, it's available
     const slotHour = Number(slot.split(":")[0])
     const currentDate = new Date()
     const currentHour = currentDate.getHours()
@@ -233,3 +246,37 @@ function isSlotAvailable(slot) {
     return false;
 }
 
+function setDoctors() {
+    const doctorInput = document.getElementById("doctor");
+    const docOptions = document.getElementById("doc-options");
+
+    renderDoctorOptions(docs);
+
+    doctorInput.addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase();
+        const filteredDocs = docs.filter(doc => doc.toLowerCase().includes(searchTerm));
+        renderDoctorOptions(filteredDocs);
+    });
+
+    docOptions.addEventListener("click", function (event) {
+    if (event.target.classList.contains("doctor-option")) {
+        doctorInput.value = event.target.textContent;
+        console.log("doctor is set, now hide the list")
+        document.getElementById("doc-options").style.display = "none"
+        updateAvailableSlots();  
+    }
+});
+
+}
+
+function renderDoctorOptions(list) {
+    const docOptions = document.getElementById("doc-options");
+    docOptions.innerHTML = "";
+    list.forEach(doc => {
+        const div = document.createElement("div");
+        div.textContent = doc;
+        div.className = "doctor-option";
+        div.style.borderBottom = "1px solid black";
+        docOptions.appendChild(div);
+    });
+}

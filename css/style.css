@@ -48,7 +48,7 @@ form input,
 form select {
   width: 100%;
   padding: 10px;
-  font-size: 15px;
+  font-size: 17px;
   border: 1px solid #908f8f;
   border-radius: 5px;
   box-sizing: border-box;
@@ -62,12 +62,29 @@ form select:focus {
   border-width: 2px;
 }
 
+.doc-options{
+  max-height: 200px;
+  position: relative;
+  margin-top: 5px;
+  background-color: #fff;
+  overflow-y: auto;
+  font-weight: 300;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: none;
+}
+
+.doctor-option{
+  padding: 3px;
+  font-size: 17;
+}
+
 .submit-button {
   width: 100%;
   height: 45px;
   background-color: #000;
   color: #fff;
-  font-size: 16px;
+  font-size: 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -88,7 +105,7 @@ table td {
   border: 1px solid #424242;
   padding: 12px;
   text-align: center;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 th {
