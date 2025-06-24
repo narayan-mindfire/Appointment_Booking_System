@@ -6,7 +6,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
 }
 
 .main-heading {
@@ -36,7 +35,7 @@ body {
 .appointment-list {
   background-color: #fff;
   padding: 25px;
-  flex: 1 1 45%;
+  flex: 45%;
   border-radius: 10px;
   max-height: 90vh;
   overflow-y: auto;
@@ -118,6 +117,14 @@ form select:focus {
   display: block;
 }
 
+  #btn-half, #btn-full{
+    border-radius: 3px;
+    border: none;
+  }
+  #btn-full{
+    background-color: #c5c4c4;
+  }
+
 .appointment-cards {
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +169,7 @@ form select:focus {
   font-size: 22px;
   font-weight: 700;
   color: #000;
+  margin-top: 0;
 }
 
 .doctor-info {
@@ -249,6 +257,30 @@ form select:focus {
 .card-buttons .delete:hover {
   background-color: #f0f0f0;
   border-color: #555;
+}
+
+.app-options{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 3px;
+}
+
+#sort {
+  border-radius: 5px;
+  font-weight: 600;
+  flex-shrink: inherit;
+  width: 180px;
+}
+
+#sort:focus{
+  outline: none;
+  border-color: #000;
+  border-width: 2px;
+}
+@media (max-width: 1110px) {
+  #sort{
+    width: 100px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -411,4 +443,7 @@ form select:focus {
     border: 1px solid #888;
   }
 
+  #sort{
+    width: 53px;
+  }
 }
