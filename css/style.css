@@ -267,10 +267,10 @@ form select:focus {
 
 #sort {
   border-radius: 5px;
-  font-weight: 600;
+  font-weight: 500;
   flex-shrink: inherit;
   width: 180px;
-  /* font-size: 11px; */
+  border: 1px solid #ddd;
 }
 
 #sort:focus{
