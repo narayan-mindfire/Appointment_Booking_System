@@ -35,7 +35,6 @@ const docs = [
 const slots = ["10:00", "11:00", "12:00", "1:00"];
 let editingAppointmentId = null;
 let sortAppointmentsBy = null;
-let doctorSelectedRecently = false;
 let gridSelected = false;
 const form = document.getElementById('myForm');
 const doctor = document.getElementById('doctor');
@@ -100,6 +99,10 @@ var utils = (function(){
 
 // form module is used for functions related to the form
 var formModule = (function(){
+
+    // local variable
+    let doctorSelectedRecently = false;
+
     /**
      * Sets the minimum date for the appointment date input to today.
      * @param {string} inputId - The ID of the date input element.
