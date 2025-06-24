@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appointment Booking System</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <h1 class="main-heading">Appointment Booking System</h1>
@@ -15,46 +16,43 @@
 
   <div class="content">
     <div class="form-container">
-      <h2>📝 Appointment Form</h2>
+      <h2>Appointment Form</h2>
       <form id="myForm">
-        <label>Name:<span class="required">*</span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
-        <label>Date:<span class="required">*</span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
-        <label>Doctor:<span class="required">*</span><br>
-          <select id="doctor">
-            <option value="">Select Doctor</option>
-            <option value="Dr. Amit">Dr. Amit</option>
-            <option value="Dr. Rhea">Dr. Rhea</option>
-          </select>
+        <label class="form-label"><i class="fa-solid fa-user"></i> Name:<span id="required-name"></span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
+        <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Date:<span id="required-date"></span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
+        <label class="form-label"><i class="fa-solid fa-stethoscope"></i> Doctor:<span id="required-doctor"></span><br>
+          <input type="text" id="doctor">
+          <div class="doc-options" id="doc-options">
+          </div>
         </label><br><span class="error-message" id="doctor-error"></span><br><br>
-        <label>Slot:<span class="required">*</span><br>
+        <label class="form-label"><i class="fa-solid fa-check-to-slot"></i> Slot:<span id="required-slot"></span><br>
           <select id="slot">
             <option value="">Select a slot</option>
           </select>
         </label><br><span class="error-message" id="slot-error"></span><br><br>
-        <label>Purpose:<br><input type="text" id="purpose" /></label><br><br>
+        <label class="form-label">
+          <i class="fa-solid fa-microscope"></i> Purpose:<span id="required-purpose"></span>
+          <br><input type="text" id="purpose" />
+        </label>
+        <br><span class="error-message" id="purpose-error"></span>
+        <br><br>
 
         <center><input class="submit-button" id="submit" type="submit" value="Book Appointment" /></center>
       </form>
     </div>
 
     <div class="appointment-list">
-        <h2>📅 Appointments Table</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Doctor</th>
-                    <th>Date</th>
-                    <th>Slot</th>
-                    <th>Activity</th>
-                </tr>
-            </thead>
-            <tbody id="appointment-body">
-            </tbody>
-        </table>
+      <div class="appointment-head">
+        <h2>Appointments List</h2>
+        <span>
+          <button id="btn-half" title="Grid View"><i class="fas fa-th-large"></i></button>
+          <button id="btn-full" title="List View"><i class="fas fa-list"></i></button>
+        </span>
+      </div>
+      <div class="appointment-cards" id="appointment-cards"></div>
     </div>
   </div>
 
-  <script src="js/script.js"></script>
+  <script type="module" src="js/script.js"></script>
 </body>
 </html>

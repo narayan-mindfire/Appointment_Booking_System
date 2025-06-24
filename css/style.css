@@ -1,93 +1,414 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
 .main-heading {
   text-align: center;
-  background-color: yellow;
-  padding: 10px;
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  font-size: 28px;
   margin: 0;
 }
 
 .head-area {
-  background-color: beige;
-  padding: 10px 20px;
+  padding: 15px 30px;
+  font-size: 18px;
 }
 
 .content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  padding: 20px;
   gap: 20px;
+  padding: 30px;
+  background-color: #000;
 }
 
 .form-container,
 .appointment-list {
-  background-color: white;
-  padding: 20px;
-  flex: 1;
-  border: 1px solid black
+  background-color: #fff;
+  padding: 25px;
+  flex: 1 1 45%;
+  border-radius: 10px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
+form input,
 form select {
   width: 100%;
-  padding: 5px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   margin-top: 5px;
+  margin-bottom: 10px;
 }
-form input{
+
+form label.form-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+form input:focus,
+form select:focus {
+  outline: none;
+  border-color: #000;
+  border-width: 2px;
+}
+
+.doc-options {
+  max-height: 200px;
+  position: relative;
+  margin-top: 5px;
+  background-color: #fff;
+  overflow-y: auto;
+  font-weight: 300;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: none;
+}
+
+.doctor-option {
+  padding: 5px;
+  font-size: 17px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.doctor-option:hover {
+  background-color: #c5c4c4;
+}
+
+.submit-button {
   width: 100%;
-  padding: 0px;
+  height: 45px;
+  background-color: #000;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 10px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.submit-button:hover {
+  background-color: #333;
 }
 
-table, th, td {
-  border: 1px solid black;
-}
 
-th, td {
-  text-align: center;
-}
-
-tr button {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.edit{
-    background-color: brown;
-}
-.delete{
-    background-color: black;
-}
-.submit-button{
-    height: 40px;
-}
-
-@media (max-width: 900px) {
-  .content {
-    flex-direction: column;
-  }
-}
-
-@media (min-width: 901px) {
-  .content {
-    flex-direction: row;
-  }
-}
-
-.required {
+#required-name,
+#required-date,
+#required-doctor,
+#required-slot,
+#required-purpose {
   color: red;
   font-weight: bold;
 }
 
 .error-message {
   color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  display: block;
+}
+
+.appointment-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#appointment-cards.full-width-view .appointment-card {
+  width: 100%;
+}
+
+.appointment-head{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appointment-card {
+  width: 43%; 
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content {
+  flex-grow: 1;
+  margin-bottom: 15px;
+}
+
+.header-section {
+  margin-bottom: 15px;
+}
+
+.patient-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #000;
+}
+
+.doctor-info {
+  font-size: 15px;
+  font-weight: 400;
+  color: #444;
+  margin: 0;
+}
+
+.doctor-name {
+  font-weight: 600;
+  color: #000;
+}
+
+.purpose-info {
+  font-size: 14px;
+  color: #666;
+  margin: 15px 0;
+  line-height: 1.4;
+}
+
+.details-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.detail-item {
+  text-align: left;
+  flex: 1;
+}
+
+.detail-item:last-child {
+  text-align: right;
+}
+
+.detail-label {
   font-size: 12px;
+  color: #888;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.detail-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.card-buttons button {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.card-buttons .edit {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.card-buttons .edit:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+.card-buttons .delete {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #888;
+}
+
+.card-buttons .delete:hover {
+  background-color: #f0f0f0;
+  border-color: #555;
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  #btn-half, #btn-full{
+    display: none;
+  }
+
+  .form-container,
+  .appointment-list {
+    padding: 8px;
+  }
+
+  .head-area {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  form label.form-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  form input,
+  form select {
+    width: 100%;
+    padding: 7px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 3px;
+  }
+
+  .submit-button {
+    width: 100%;
+    height: 35px;
+    font-size: 13px;
+  }
+ 
+  .form-container h2, .appointment-list h2{
+    font-size: 20px;
+  }
+
+ .appointment-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; 
+    gap: 10px;
+    padding: 0; 
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: unset;
+    scroll-snap-align: unset;
+  }
+  .appointment-card {
+    width: 48%; 
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px; 
+    box-sizing: border-box;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between; 
+  }
+
+  .card-content {
+    flex-grow: 1; 
+    margin-bottom: 5px; 
+  }
+
+  .header-section {
+    margin-bottom: 5px;
+  }
+
+  .patient-name {
+    font-size: 15px; 
+    font-weight: 700; 
+    color: #000;
+  }
+
+  .doctor-info {
+    font-size: 13px;
+    color: #444; 
+    margin: 0;
+  }
+
+  .doctor-name {
+    font-weight: 600; 
+  }
+
+  .purpose-info {
+    font-size: 11px;
+    color: #848383; 
+    margin: 10px 0; 
+  }
+
+  .details-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; 
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0; 
+    margin-top: 10px;
+  }
+
+  .detail-item {
+    text-align: left; 
+    flex: 1; 
+  }
+
+  .detail-item:last-child {
+    text-align: right; 
+  }
+
+  .detail-label {
+    font-size: 12px;
+    color: #7b7a7a;
+  }
+
+  .detail-value {
+    font-size: 13px; 
+    font-weight: 600; 
+    color: #000;
+  }
+
+  .card-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; 
+    margin-top: 8px; 
+    padding-top: 8px;
+  }
+
+  .card-buttons button {
+    flex: 1; 
+    padding: 3px 7px; 
+    font-size: 13px;
+    font-weight: 400;
+    border-radius: 6px; 
+  }
+
+  .card-buttons .edit {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .card-buttons .edit:hover {
+    background-color: #333;
+    border-color: #333;
+  }
+
+  .card-buttons .delete {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #888;
+  }
+
 }

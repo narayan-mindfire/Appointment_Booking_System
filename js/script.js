@@ -1,235 +1,387 @@
+// configuration for form validation: true-> for 
+export const validationConfig = {
+    "name": true,
+    "date": true,
+    "doctor": true,
+    "slot": true,
+    "purpose": true,
+}
+
+// doctor list
+export const docs = [
+  "Aarya Sharma",
+  "Rohan Mehta",
+  "Meera Nair",
+  "Vihaan Kapoor",
+  "Kavya Sinha",
+  "Arjun Patel",
+  "Isha Reddy",
+  "Dev Malhotra",
+  "Ananya Iyer",
+  "Neil Deshmukh",
+  "Tara Joshi",
+  "Kunal Bansal",
+  "Riya Choudhury",
+  "Yash Verma",
+  "Sneha Bhatt",
+  "Aryan Singh",
+  "Pooja Das",
+  "Rahul Jain",
+  "Nikita Roy",
+  "Aditya Chauhan"
+];
+
 const form = document.getElementById('myForm');
+const slots = ["10:00", "11:00", "12:00", "1:00"];
 let editingAppointmentId = null;
 
-// setting four time slots
-const slots = ["10:00", "11:00", "12:00", "1:00"];
+// Initialize on load
+initialize();
 
-form.addEventListener('submit', handleForm);
-document.getElementById("doctor").addEventListener("change", updateAvailableSlots);
-document.getElementById("date").addEventListener("change", updateAvailableSlots);
+/**
+ * Initialize the application.
+ */
+function initialize() {
+    setMinDateForInput("date");
+    markRequiredFields();
+    setDoctors();
+    reloadAppointmentList();
 
-// fetching local storage data upon load/reload
-reloadAppointmentList();
+    form.addEventListener('submit', handleForm);
+    document.getElementById("doctor").addEventListener("change", updateAvailableSlots);
+    document.getElementById("date").addEventListener("change", updateAvailableSlots);
 
-// fetching appointments from local storage
-function getAppointments(){
-    const data = localStorage.getItem('appointments');
-    return data ? JSON.parse(data) : [];
+    document.addEventListener('click', handleDoctorDropdownClick);
+    document.getElementById('doctor').addEventListener('click', handleDoctorInputFieldClick);
 }
 
-// setting the appointment list to local storage
-function setAppointments(appointments){
-    localStorage.setItem('appointments', JSON.stringify(appointments));
+/**
+ * Sets the minimum date for the appointment date input to today.
+ * @param {string} inputId - The ID of the date input element.
+ */
+function setMinDateForInput(inputId) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const minDate = `${year}-${month}-${day}`;
+
+    document.getElementById(inputId).setAttribute("min", minDate);
 }
 
+/**
+ * Displays asterisk for required fields.
+ */
+function markRequiredFields() {
+    Object.keys(validationConfig).forEach(field => {
+        if (validationConfig[field]) {
+            const label = document.getElementById(`required-${field}`);
+            if (label) label.textContent = '*';
+        }
+    });
+}
+
+/**
+ * Handles doctor dropdown toggle visibility.
+ */
+function handleDoctorDropdownClick(event) {
+    doctorSelectedRecently = false;
+    const doctorInput = document.getElementById("doctor");
+    const docList = document.getElementById("doc-options");
+    if (!doctorInput.contains(event.target)) {
+        docList.style.display = "none";
+    }
+}
+let doctorSelectedRecently = false;
+function handleDoctorInputFieldClick(){
+    // debugger
+    if(!doctorSelectedRecently) {
+        document.getElementById("doc-options").style.display = "block"   
+    }
+}
+
+/**
+ * Handles form submission, including validation, creating and updating appointments.
+ * @param {Event} event 
+ */
 function handleForm(event) {
     event.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const date = document.getElementById("date").value;
-    const doctor = document.getElementById("doctor").value;
-    const slot = document.getElementById("slot").value;
-    const purpose = document.getElementById("purpose").value;
-
-    let isValid = true;
-
-    // Reset error messages
+    const fields = getFormFields();
     resetErrorMessages();
 
-    // showing error messages individually
-    if (!name) {
-        isValid = false;
-        document.getElementById("name-error").textContent = "Name is required.";
-    }
-    if (!date) {
-        isValid = false;
-        document.getElementById("date-error").textContent = "Date is required.";
-    }
-    if (!doctor) {
-        isValid = false;
-        document.getElementById("doctor-error").textContent = "Doctor selection is required.";
-    }
-    if (!slot) {
-        isValid = false;
-        document.getElementById("slot-error").textContent = "Slot selection is required.";
-    }
-    if (!isValid) {
-        return;
+    let isValid = true;
+    for (let key in fields) {
+        if (validationConfig[key] && !fields[key]) {
+            isValid = false;
+            const errorElement = document.getElementById(`${key}-error`);
+            if (errorElement) {
+                errorElement.textContent = `${key} is required.`;
+            }
+        }
     }
 
-    let appointments = getAppointments()
+    if (!isValid) return;
+
+    let appointments = getAppointments();
 
     if (editingAppointmentId) {
         const index = appointments.findIndex(app => app.id === editingAppointmentId);
-        if(index !== -1){
-            appointments[index] = {
-                id: editingAppointmentId,
-                name,
-                date,
-                doctor,
-                slot,
-                purpose
-            };
+        if (index !== -1) {
+            appointments[index] = { id: editingAppointmentId, ...fields };
             editingAppointmentId = null;
-            document.getElementById("submit").value = "Book Appointment";
-        }else{
-            alert("Appointment you're editing no longer exists, please create a new one")
+            form.querySelector("#submit").value = "Book Appointment";
+        } else {
+            alert("Appointment you're editing no longer exists, please create a new one.");
+            return;
         }
     } else {
-        const appointment = {
-            id: Date.now(),
-            name,
-            date,
-            doctor,
-            slot,
-            purpose
-        };
-        appointments.push(appointment);
+        appointments.push({ id: Date.now(), ...fields });
     }
 
-    setAppointments(appointments)
+    setAppointments(appointments);
     form.reset();
     updateAvailableSlots();
     reloadAppointmentList();
 }
 
-// function to reset error messages
+/**
+ * Returns form field values as an object.
+ */
+function getFormFields() {
+    return {
+        name: document.getElementById("name").value,
+        date: document.getElementById("date").value,
+        doctor: document.getElementById("doctor").value,
+        slot: document.getElementById("slot").value,
+        purpose: document.getElementById("purpose").value
+    };
+}
+
+/**
+ * Clears all validation error messages.
+ */
 function resetErrorMessages() {
-    const errorMessages = document.querySelectorAll(".error-message");
-    errorMessages.forEach(message => message.textContent = "");
+    document.querySelectorAll(".error-message").forEach(ele => ele.textContent = "");
 }
 
-// appointment list
-function addAppointmentToList(appointment) {
-  const tbody = document.getElementById("appointment-body");
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${appointment.name}</td>
-    <td>${appointment.doctor}</td>
-    <td>${appointment.date}</td>
-    <td>${appointment.slot}</td>
-    <td>
-      <button class="edit">✏️</button>
-      <button class="delete">❌</button>
-    </td>
-  `;
-  row.querySelector(".delete").addEventListener("click", () => deleteAppointment(appointment.id));
-  row.querySelector(".edit").addEventListener("click", () => editAppointment(appointment.id));
-  tbody.appendChild(row);
-}
-
-// deleting appointment
-function deleteAppointment(id) {
-    const confirmed = confirm("Are you sure you want to delete this appointment?");
-    if (!confirmed) return;
-    let appointments = getAppointments();
-    setAppointments(appointments.filter(app => app.id !== id));
-    reloadAppointmentList();
-}
-
-// edit functionality
-function editAppointment(id) {
-    editingAppointmentId = id;
-    let appointments = getAppointments()
-
-    const appointment = appointments.find(app => app.id === id);
-    if (!appointment) return;
-
-    document.getElementById("name").value = appointment.name;
-    document.getElementById("date").value = appointment.date;
-    document.getElementById("doctor").value = appointment.doctor;
-    updateAvailableSlots();
-    document.getElementById("slot").value = appointment.slot;
-    document.getElementById("purpose").value = appointment.purpose;
-    document.getElementById("submit").value = "Update Appointment";
-}
-
-// total appointment count
-function updateAppointmentCount() {
-    let appointments = getAppointments()
-    document.getElementById("total-appointments").textContent = appointments.length;
-}
-
-// reloading appointment list
-function reloadAppointmentList() {
-    const tbody = document.getElementById("appointment-body");
-    tbody.innerHTML = "";
-
-    let appointments = getAppointments();
-    appointments.forEach(app => addAppointmentToList(app));
-    updateAppointmentCount();
-
-    // setting the date input to enable only available dates (from current day onwards)
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; 
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-    dd = '0' + dd;
-    }
-
-    if (mm < 10) {
-    mm = '0' + mm;
-    } 
-        
-    today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("date").setAttribute("min", today);
-
-}
-
-// slot availability updation
+/**
+ * Populates available time slots based on selected date and doctor.
+ */
 function updateAvailableSlots() {
     const date = document.getElementById("date").value;
     const doctor = document.getElementById("doctor").value;
     const slotSelect = document.getElementById("slot");
 
     slotSelect.innerHTML = '<option value="">Select a slot</option>';
-    
     if (!date || !doctor) return;
-    
-    let appointments = getAppointments();
-    
-    // checking for booked slots
+
+    const appointments = getAppointments();
     const bookedSlots = appointments
-    .filter(app => app.date === date && app.doctor === doctor && app.id !== editingAppointmentId)
-    .map(app => app.slot);
-    
-    const currentDate = new Date();
-    const currentDateString = currentDate.toISOString().split('T')[0];
-    
+        .filter(appointment => appointment.date === date && appointment.doctor === doctor && appointment.id !== editingAppointmentId)
+        .map(appointment => appointment.slot);
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
     const availableSlots = slots.filter(slot => {
-        if (date === currentDateString) {
-            return !bookedSlots.includes(slot) && isSlotAvailable(slot);
-        } else {
-            return !bookedSlots.includes(slot);
-        }
+        const isBooked = bookedSlots.includes(slot);
+        const isToday = date === todayStr;
+        return !isBooked && (!isToday || isSlotAvailable(slot));
     });
-    
-    // setting available slots in the UI
+
+    if (availableSlots.length === 0) {
+        slotSelect.innerHTML = '<option value="">No slots available</option>';
+        return;
+    }
+
     availableSlots.forEach(slot => {
         const option = document.createElement("option");
         option.value = slot;
         option.textContent = slot;
         slotSelect.appendChild(option);
     });
-    
-    if(availableSlots.length === 0){
-        slotSelect.innerHTML = '<option value="">No slots available</option>';
-    }
 }
 
-
+/**
+ * Checks if a slot is available today (based on current time).
+ * @param {string} slot 
+ * @returns {boolean}
+ */
 function isSlotAvailable(slot) {
-    // If the slot is later than the current time, it's available
-    const slotHour = Number(slot.split(":")[0])
-    const currentDate = new Date()
-    const currentHour = currentDate.getHours()
-    console.log("slotHour: ", slotHour)
-    console.log("currentHour: ", currentHour)
-    if (slotHour > currentHour) {
-        return true; 
-    }
-    return false;
+    const slotHour = Number(slot.split(":")[0]);
+    return slotHour > new Date().getHours();
 }
+
+/**
+ * Load doctors into dropdown with search filter.
+ */
+function setDoctors() {
+    const doctorInput = document.getElementById("doctor");
+    const docOptions = document.getElementById("doc-options");
+
+    renderDoctorOptions(docs);
+
+    doctorInput.addEventListener("input", function () {
+        const filteredDocs = docs.filter(doc =>
+            doc.toLowerCase().includes(this.value.toLowerCase())
+        );
+        docOptions.style.display = "block"
+        renderDoctorOptions(filteredDocs);
+    });
+
+    docOptions.addEventListener("click", function (event) {
+        event.stopPropagation()
+        // debugger
+        if (event.target.classList.contains("doctor-option")) {
+            doctorInput.value = event.target.textContent;
+            updateAvailableSlots();
+            docOptions.style.display = "none";
+            doctorSelectedRecently = true;
+        }
+    });
+}
+
+/**
+ * Renders a list of doctor options.
+ * @param {string[]} list 
+ */
+function renderDoctorOptions(list) {
+    const docOptions = document.getElementById("doc-options");
+    docOptions.innerHTML = "";
+    list.forEach(doc => {
+        const div = document.createElement("div");
+        div.textContent = doc;
+        div.className = "doctor-option";
+        div.style.borderBottom = "1px solid black";
+        docOptions.appendChild(div);
+    });
+}
+
+/**
+ * Load and render all appointments.
+ */
+function reloadAppointmentList() {
+    const cardContainer = document.getElementById("appointment-cards");
+    cardContainer.innerHTML = "";
+
+    const appointments = getAppointments();
+    appointments.forEach(app => {
+        addAppointmentCard(app);
+    });
+
+    updateAppointmentCount();
+}
+
+/**
+ * Get appointments from localStorage.
+ * @returns {Object[]} appointments
+ */
+function getAppointments() {
+    const data = localStorage.getItem("appointments");
+    return data ? JSON.parse(data) : [];
+}
+
+/**
+ * Saves appointments to localStorage.
+ * @param {Object[]} appointments 
+ */
+function setAppointments(appointments) {
+    localStorage.setItem("appointments", JSON.stringify(appointments));
+}
+
+/**
+ * Updates the total appointment count.
+ */
+function updateAppointmentCount() {
+    document.getElementById("total-appointments").textContent = getAppointments().length;
+}
+
+/**
+ * Add appointment entry to the card view.
+ * @param {Object} appointment 
+ */
+function addAppointmentCard(appointment) {
+    const cardContainer = document.getElementById("appointment-cards");
+    const card = document.createElement("div");
+    card.className = "appointment-card";
+
+    card.innerHTML = `
+        <div class="card-content">
+            <div class="header-section">
+                <h3 class="patient-name">${appointment.name}</h3>
+                <p class="doctor-info"><span class="doctor-name"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctor}</span></p>
+            </div>
+
+            <p class="purpose-info">${appointment.purpose}</p>
+
+            <div class="details-section">
+                <div class="detail-item">
+                    <span class="detail-label"> <i class="fa-solid fa-calendar-days"></i> DATE</span>
+                    <span class="detail-value">${appointment.date}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label"><i class="fa-solid fa-clock"></i> TIME</span>
+                    <span class="detail-value">${appointment.slot}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-buttons">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+        </div>
+    `;
+
+    card.querySelector(".edit").addEventListener("click", () => editAppointment(appointment.id));
+    card.querySelector(".delete").addEventListener("click", () => deleteAppointment(appointment.id));
+
+    cardContainer.appendChild(card);
+}
+/**
+ * Deletes an appointment by ID after confirmation.
+ * @param {number} id - Appointment ID
+ */
+function deleteAppointment(id) {
+    if (!confirm("Are you sure you want to delete this appointment?")) return;
+
+    const appointments = getAppointments().filter(app => app.id !== id);
+    setAppointments(appointments);
+    reloadAppointmentList();
+}
+
+/**
+ * Loads appointment data into form for editing.
+ * @param {number} id - Appointment ID
+ */
+function editAppointment(id) {
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
+    const appointments = getAppointments();
+    const appointment = appointments.find(app => app.id === id);
+    if (!appointment) return;
+
+    editingAppointmentId = id;
+
+    document.getElementById("name").value = appointment.name;
+    document.getElementById("date").value = appointment.date;
+    document.getElementById("doctor").value = appointment.doctor;
+    updateAvailableSlots(); // Updating before setting slot to reflect correct availability
+    document.getElementById("slot").value = appointment.slot;
+    document.getElementById("purpose").value = appointment.purpose;
+
+    form.querySelector("#submit").value = "Update Appointment";
+}
+
+// event listeners to toggle between list and grid view of appointments
+document.getElementById('btn-half').addEventListener('click', () => {
+    const appointmentCards = document.getElementById('appointment-cards');
+    appointmentCards.classList.remove('full-width-view');
+})
+document.getElementById('btn-full').addEventListener('click', () => {
+    const appointmentCards = document.getElementById('appointment-cards');
+    appointmentCards.classList.add('full-width-view');
+})
 
