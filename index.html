@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appointment Booking System</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <h1 class="main-heading">Appointment Booking System</h1>
@@ -17,20 +18,20 @@
     <div class="form-container">
       <h2>Appointment Form</h2>
       <form id="myForm">
-        <label class="form-label">Name:<span id="required-name"></span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
-        <label class="form-label">Date:<span id="required-date"></span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
-        <label class="form-label">Doctor:<span id="required-doctor"></span><br>
+        <label class="form-label"><i class="fa-solid fa-user"></i> Name:<span id="required-name"></span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
+        <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Date:<span id="required-date"></span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
+        <label class="form-label"><i class="fa-solid fa-stethoscope"></i> Doctor:<span id="required-doctor"></span><br>
           <input type="text" id="doctor">
           <div class="doc-options" id="doc-options">
           </div>
         </label><br><span class="error-message" id="doctor-error"></span><br><br>
-        <label class="form-label">Slot:<span id="required-slot"></span><br>
+        <label class="form-label"><i class="fa-solid fa-check-to-slot"></i> Slot:<span id="required-slot"></span><br>
           <select id="slot">
             <option value="">Select a slot</option>
           </select>
         </label><br><span class="error-message" id="slot-error"></span><br><br>
         <label class="form-label">
-          Purpose:<span id="required-purpose"></span>
+          <i class="fa-solid fa-microscope"></i> Purpose:<span id="required-purpose"></span>
           <br><input type="text" id="purpose" />
         </label>
         <br><span class="error-message" id="purpose-error"></span>
@@ -41,7 +42,13 @@
     </div>
 
     <div class="appointment-list">
-      <h2>Appointments List</h2>
+      <div class="appointment-head">
+        <h2>Appointments List</h2>
+        <span>
+          <button id="btn-half" title="Grid View"><i class="fas fa-th-large"></i></button>
+          <button id="btn-full" title="List View"><i class="fas fa-list"></i></button>
+        </span>
+      </div>
       <div class="appointment-cards" id="appointment-cards"></div>
     </div>
   </div>

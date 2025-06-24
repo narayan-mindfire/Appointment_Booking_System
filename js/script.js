@@ -305,23 +305,22 @@ function addAppointmentCard(appointment) {
     const card = document.createElement("div");
     card.className = "appointment-card";
 
-    // NEW MODERN CARD HTML STRUCTURE
     card.innerHTML = `
         <div class="card-content">
             <div class="header-section">
                 <h3 class="patient-name">${appointment.name}</h3>
-                <p class="doctor-info">with Dr. <span class="doctor-name">${appointment.doctor}</span></p>
+                <p class="doctor-info"><span class="doctor-name"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctor}</span></p>
             </div>
 
             <p class="purpose-info">${appointment.purpose}</p>
 
             <div class="details-section">
                 <div class="detail-item">
-                    <span class="detail-label">Date</span>
+                    <span class="detail-label"> <i class="fa-solid fa-calendar-days"></i> DATE</span>
                     <span class="detail-value">${appointment.date}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Time</span>
+                    <span class="detail-label"><i class="fa-solid fa-clock"></i> TIME</span>
                     <span class="detail-value">${appointment.slot}</span>
                 </div>
             </div>
@@ -355,6 +354,11 @@ function deleteAppointment(id) {
  * @param {number} id - Appointment ID
  */
 function editAppointment(id) {
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
     const appointments = getAppointments();
     const appointment = appointments.find(app => app.id === id);
     if (!appointment) return;
@@ -370,3 +374,14 @@ function editAppointment(id) {
 
     form.querySelector("#submit").value = "Update Appointment";
 }
+
+// event listeners to toggle between list and grid view of appointments
+document.getElementById('btn-half').addEventListener('click', () => {
+    const appointmentCards = document.getElementById('appointment-cards');
+    appointmentCards.classList.remove('full-width-view');
+})
+document.getElementById('btn-full').addEventListener('click', () => {
+    const appointmentCards = document.getElementById('appointment-cards');
+    appointmentCards.classList.add('full-width-view');
+})
+
