@@ -225,6 +225,7 @@ function setDoctors() {
         const filteredDocs = docs.filter(doc =>
             doc.toLowerCase().includes(this.value.toLowerCase())
         );
+        docOptions.style.display = "block"
         renderDoctorOptions(filteredDocs);
     });
 
@@ -260,14 +261,11 @@ function renderDoctorOptions(list) {
  * Load and render all appointments.
  */
 function reloadAppointmentList() {
-    const tbody = document.getElementById("appointment-body");
     const cardContainer = document.getElementById("appointment-cards");
-    tbody.innerHTML = "";
     cardContainer.innerHTML = "";
 
     const appointments = getAppointments();
     appointments.forEach(app => {
-        addAppointmentToList(app);
         addAppointmentCard(app);
     });
 
@@ -299,31 +297,6 @@ function updateAppointmentCount() {
 }
 
 /**
- * Added appointment entry to the list (table).
- * @param {Object} appointment 
- */
-function addAppointmentToList(appointment) {
-    const tbody = document.getElementById("appointment-body");
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-        <td>${appointment.name}</td>
-        <td>${appointment.doctor}</td>
-        <td>${appointment.date}</td>
-        <td>${appointment.slot}</td>
-        <td>
-            <button class="edit">edit</button>
-            <button class="delete">delete</button>
-        </td>
-    `;
-
-    row.querySelector(".edit").addEventListener("click", () => editAppointment(appointment.id));
-    row.querySelector(".delete").addEventListener("click", () => deleteAppointment(appointment.id));
-
-    tbody.appendChild(row);
-}
-
-/**
  * Add appointment entry to the card view.
  * @param {Object} appointment 
  */
@@ -332,15 +305,31 @@ function addAppointmentCard(appointment) {
     const card = document.createElement("div");
     card.className = "appointment-card";
 
+    // NEW MODERN CARD HTML STRUCTURE
     card.innerHTML = `
-        <h3>${appointment.name}</h3>
-        <p><strong>Doctor:</strong> ${appointment.doctor}</p>
-        <p><strong>Date:</strong> ${appointment.date}</p>
-        <p><strong>Slot:</strong> ${appointment.slot}</p>
-        <p><strong>Purpose:</strong> ${appointment.purpose}</p>
+        <div class="card-content">
+            <div class="header-section">
+                <h3 class="patient-name">${appointment.name}</h3>
+                <p class="doctor-info">with Dr. <span class="doctor-name">${appointment.doctor}</span></p>
+            </div>
+
+            <p class="purpose-info">${appointment.purpose}</p>
+
+            <div class="details-section">
+                <div class="detail-item">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value">${appointment.date}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Time</span>
+                    <span class="detail-value">${appointment.slot}</span>
+                </div>
+            </div>
+        </div>
+
         <div class="card-buttons">
-            <button class="edit">edit</button>
-            <button class="delete">delete</button>
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
         </div>
     `;
 
@@ -349,7 +338,6 @@ function addAppointmentCard(appointment) {
 
     cardContainer.appendChild(card);
 }
-
 /**
  * Deletes an appointment by ID after confirmation.
  * @param {number} id - Appointment ID
