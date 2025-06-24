@@ -1,5 +1,5 @@
-// configuration for form validation: true-> for 
-export const validationConfig = {
+// configuration for form validation: true-> for required fields, otherwise optional
+const validationConfig = {
     "name": true,
     "date": true,
     "doctor": true,
@@ -8,7 +8,7 @@ export const validationConfig = {
 }
 
 // doctor list
-export const docs = [
+const docs = [
   "Aarya Sharma",
   "Rohan Mehta",
   "Meera Nair",
@@ -32,13 +32,20 @@ export const docs = [
 ];
 
 const form = document.getElementById('myForm');
+
 const slots = ["10:00", "11:00", "12:00", "1:00"];
 let editingAppointmentId = null;
 let sortAppointmentsBy = null;
+let doctorSelectedRecently = false;
 let gridSelected = false;
 
 // Initialize on load
 initialize();
+
+// event listeners to toggle between list and grid view of appointments
+document.getElementById('btn-half').addEventListener('click', () => {gridSelected = false; selectList()} )
+document.getElementById('btn-full').addEventListener('click', () => {gridSelected = true; selectGrid()})
+
 
 /**
  * Initialize the application.
@@ -108,7 +115,6 @@ function handleDoctorDropdownClick(event) {
         docList.style.display = "none";
     }
 }
-let doctorSelectedRecently = false;
 function handleDoctorInputFieldClick(){
     // debugger
     if(!doctorSelectedRecently) {
@@ -416,6 +422,7 @@ function editAppointment(id) {
     });
     const appointments = getAppointments();
     const appointment = appointments.find(app => app.id === id);
+
     if (!appointment) return;
 
     editingAppointmentId = id;
@@ -429,10 +436,6 @@ function editAppointment(id) {
 
     form.querySelector("#submit").value = "Update Appointment";
 }
-
-// event listeners to toggle between list and grid view of appointments
-document.getElementById('btn-half').addEventListener('click', () => {gridSelected = false; selectList()} )
-document.getElementById('btn-full').addEventListener('click', () => {gridSelected = true; selectGrid()})
 
 function selectList(){
     const appointmentCards = document.getElementById('appointment-cards');
