@@ -34,6 +34,8 @@ export const docs = [
 const form = document.getElementById('myForm');
 const slots = ["10:00", "11:00", "12:00", "1:00"];
 let editingAppointmentId = null;
+let sortAppointmentsBy = null;
+let gridSelected = false;
 
 // Initialize on load
 initialize();
@@ -53,6 +55,20 @@ function initialize() {
 
     document.addEventListener('click', handleDoctorDropdownClick);
     document.getElementById('doctor').addEventListener('click', handleDoctorInputFieldClick);
+
+    document.getElementById('sort').addEventListener('change', (event) => {
+        sortAppointmentsBy = event.target.value;
+        console.log("sortAppointmentsBy: ", sortAppointmentsBy);
+        reloadAppointmentList();
+    });
+
+    let gridSelected = localStorage.getItem("gridSelected");
+    if(gridSelected === "true"){
+        selectGrid()
+    }
+    else if(gridSelected === "false"){
+        selectList()
+    }
 }
 
 /**
@@ -261,14 +277,53 @@ function renderDoctorOptions(list) {
  * Load and render all appointments.
  */
 function reloadAppointmentList() {
+    console.log("at reload app list")
     const cardContainer = document.getElementById("appointment-cards");
     cardContainer.innerHTML = "";
 
+    
+    
     const appointments = getAppointments();
+    if(sortAppointmentsBy){
+        // all comparisions are done among strings for now
+        console.log("sorting by: ", sortAppointmentsBy)
+        
+        switch(sortAppointmentsBy){
+            case "date": 
+                appointments.sort((a, b) => {
+                    return a["date"].localeCompare(b["date"]);
+                });
+                break;
+            case "dateR": 
+                appointments.sort((a, b) => {
+                    return b["date"].localeCompare(a["date"]);
+                });
+                break;
+            case "doctor": 
+                appointments.sort((a, b) => {
+                    return a["doctor"].localeCompare(b["doctor"]);
+                });
+                break;
+            case "doctorR": 
+                appointments.sort((a, b) => {
+                    return b["doctor"].localeCompare(a["doctor"]);
+                });
+                break;
+            case "name": 
+                appointments.sort((a, b) => {
+                    return a["name"].localeCompare(b["name"]);
+                });
+                break;
+            case "nameR": 
+                appointments.sort((a, b) => {
+                    return b["name"].localeCompare(a["name"]);
+                });
+                break;
+        }
+    }
     appointments.forEach(app => {
         addAppointmentCard(app);
     });
-
     updateAppointmentCount();
 }
 
@@ -376,12 +431,21 @@ function editAppointment(id) {
 }
 
 // event listeners to toggle between list and grid view of appointments
-document.getElementById('btn-half').addEventListener('click', () => {
+document.getElementById('btn-half').addEventListener('click', () => {gridSelected = false; selectList()} )
+document.getElementById('btn-full').addEventListener('click', () => {gridSelected = true; selectGrid()})
+
+function selectList(){
     const appointmentCards = document.getElementById('appointment-cards');
     appointmentCards.classList.remove('full-width-view');
-})
-document.getElementById('btn-full').addEventListener('click', () => {
+    document.getElementById('btn-half').style.backgroundColor = "#c5c4c4"
+    document.getElementById('btn-full').style.backgroundColor = "white"
+    localStorage.setItem("gridSelected", "false")
+}
+
+function selectGrid(){
     const appointmentCards = document.getElementById('appointment-cards');
     appointmentCards.classList.add('full-width-view');
-})
-
+    document.getElementById('btn-full').style.backgroundColor = "#c5c4c4"
+    document.getElementById('btn-half').style.backgroundColor = "white"
+    localStorage.setItem("gridSelected", "true")
+}

@@ -44,10 +44,19 @@
     <div class="appointment-list">
       <div class="appointment-head">
         <h2>Appointments List</h2>
-        <span>
-          <button id="btn-half" title="Grid View"><i class="fas fa-th-large"></i></button>
-          <button id="btn-full" title="List View"><i class="fas fa-list"></i></button>
-        </span>
+        <div class="app-options">
+          <select id="sort">
+            <option>Sort appointments(default)</option>
+            <option id="sDate" value="date">Sort by date (newest to oldest)</option>
+            <option id="sDate" value="dateR">Sort by date (oldest to newest)</option>
+            <option id="sDname" value="doctor">Sort by doctor name (A-Z)</option>
+            <option id="sDname" value="doctorR">Sort by doctor name (Z-A)</option>
+            <option id="sPname" value="name">Sort by doctor patient name (A-Z)</option>
+            <option id="sPname" value="nameR">Sort by doctor patient name (Z-A)</option>
+          </select>
+          <button id="btn-half"><i class="fas fa-th-large"></i></button>
+          <button id="btn-full"><i class="fas fa-list"></i></button>
+        </div>
       </div>
       <div class="appointment-cards" id="appointment-cards"></div>
     </div>
