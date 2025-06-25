@@ -1,9 +1,6 @@
 import { getAppointments, setAppointments } from "./storage.service.js";
 import state from "./states.js";
-import { utilService } from "./logic.service.js";
 import { slots } from "./constants.js";
-
-const utils = utilService()
 
 const form = document.getElementById('myForm');
 const doctorEle = document.getElementById('doctor');
@@ -21,6 +18,10 @@ const purposeEle = document.getElementById("purpose");
 const slotOptionsEle = document.getElementById("slot-options");
 const totalAppEle = document.getElementById("total-appointments");
 
+/**
+ * function to add appointment cards in DOM
+ * @param {object} appointment 
+ */
 function addAppointmentCard(appointment) {
     const card = document.createElement("div");
     card.className = "appointment-card";
@@ -58,40 +59,43 @@ function addAppointmentCard(appointment) {
     appointmentCards.appendChild(card);
 }
 
-    function updateAvailableSlots() {
-        const date = dateEle.value;
-        const doctorVal = doctor.value;
-        const slotInput = slotEle;
-        slotOptionsEle.innerHTML = ""; 
-        slotOptionsEle.classList.remove("hidden");
+/**
+ * checks and udpdates available slots
+ */
+function updateAvailableSlots() {
+    const date = dateEle.value;
+    const doctorVal = doctor.value;
+    const slotInput = slotEle;
+    slotOptionsEle.innerHTML = ""; 
+    slotOptionsEle.classList.remove("hidden");
 
-        if (!date || !doctorVal) return;
-    
-        const appointments = getAppointments();
-        const bookedSlots = appointments
-            .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
-            .map(appointment => appointment.slot);
-    
-        slots.forEach(slot => {
-            const button = document.createElement("button");
-            button.className = "slot-button";
-            button.textContent = slot;
-            const today = new Date();
-            const selectedDate = new Date(date);
-            const isToday = today.toDateString() === selectedDate.toDateString();
+    if (!date || !doctorVal) return;
 
-            button.disabled = bookedSlots.includes(slot) || (isToday && !_isSlotAvailable(slot));
-            
-            if (!button.disabled) {
-                button.addEventListener("click", () => {
-                    slotInput.value = slot;
-                    slotOptionsEle.classList.add("hidden");
-                });
-            }
-            slotOptionsEle.appendChild(button);
-        });
+    const appointments = getAppointments();
+    const bookedSlots = appointments
+        .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
+        .map(appointment => appointment.slot);
 
-    }
+    slots.forEach(slot => {
+        const button = document.createElement("button");
+        button.className = "slot-button";
+        button.textContent = slot;
+        const today = new Date();
+        const selectedDate = new Date(date);
+        const isToday = today.toDateString() === selectedDate.toDateString();
+
+        button.disabled = bookedSlots.includes(slot) || (isToday && !_isSlotAvailable(slot));
+        
+        if (!button.disabled) {
+            button.addEventListener("click", () => {
+                slotInput.value = slot;
+                slotOptionsEle.classList.add("hidden");
+            });
+        }
+        slotOptionsEle.appendChild(button);
+    });
+
+}
 
 /**
  * Loads appointment data into form for editing.
@@ -202,6 +206,11 @@ function reloadAppointmentList() {
     updateAppointmentCount();
 }
 
+/**
+ * function to show toast messages in the dom
+ * @param {string} message 
+ * @param {string} type 
+ */
 function showToast(message, type = "success") {
     const toast = document.getElementById("toast-message");
     toast.textContent = message;
@@ -218,8 +227,13 @@ function showToast(message, type = "success") {
       toast.classList.remove("toast-visible");
       toast.classList.add("toast-hidden");
     }, 3000);
-  }
+}
 
+/**
+ * function to delete appointments using id
+ * @param {string} id 
+ * @returns 
+ */
 function deleteAppointment(id) {
     if (!confirm("Are you sure you want to delete this appointment?")) return;
     const appointments = getAppointments().filter(app => app.id !== id);

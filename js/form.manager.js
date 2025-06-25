@@ -41,7 +41,7 @@ const formService = (function(){
      */
     function handleDoctorDropdownClick(event) {
         doctorSelectedRecently = false;
-        if (!doctor.contains(event.target)) {
+        if (!doctorEle.contains(event.target)) {
             docList.style.display = "none";
         }
     }
@@ -222,6 +222,13 @@ const formService = (function(){
         });
 
     }
+
+    function handleOutsideClick(e){
+        doctorSelectedRecently = true;
+        if (!slotEle.contains(e.target) && !slotOptionsEle.contains(e.target)) {
+            slotOptionsEle.classList.add("hidden");
+        }
+    }
     
     /**
      * Checks if a slot is available today (based on current time).
@@ -248,7 +255,7 @@ const formService = (function(){
         });
     
         docList.addEventListener("click", function (event) {
-            event.stopPropagation()
+            debugger
             if (event.target.classList.contains("doctor-option")) {
                 doctor.value = event.target.textContent;
                 updateAvailableSlots();
@@ -274,6 +281,7 @@ const formService = (function(){
     }
 
     function handleSlot() {
+        debugger
         const date = dateEle.value;
         const doctor = doctorEle.value;
         if (date && doctor) {
@@ -291,7 +299,8 @@ const formService = (function(){
         updateAvailableSlots,
         handleForm,
         setDoctors,
-        handleSlot
+        handleSlot,
+        handleOutsideClick
     }
 })
 

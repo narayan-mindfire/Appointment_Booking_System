@@ -5,6 +5,7 @@ import { formService } from "./form.manager.js";
 import { reloadAppointmentList} from "./dom.service.js";
 import { registerEvents } from "./events.js";
 
+// registering 
 registerEvents();
 const utils = utilService();
 const formModule = formService();

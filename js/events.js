@@ -7,6 +7,7 @@ import { formService } from "./form.manager.js";
 const utils = utilService();
 const formModule = formService();
 
+// all the events in app
 function registerEvents() {
   btnFull.addEventListener("click", () => {
     state.gridSelected = false;
