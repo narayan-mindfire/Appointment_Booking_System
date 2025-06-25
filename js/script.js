@@ -1,10 +1,11 @@
-// configuration for form validation: true-> for required fields, otherwise optional
+// configuration for form validation: array for each field will contain the validation that field will go through
 const validationConfig = {
-    "name": true,
-    "date": true,
-    "doctor": true,
-    "slot": true,
-    "purpose": true,
+    "name": ["present"],
+    "email": ["present", "emailFormat"],
+    "date": ["present"],
+    "doctor": ["present"],
+    "slot": ["present"],
+    "purpose": [],
 }
 
 // doctor list
@@ -55,6 +56,35 @@ function initialize() {
         utils.selectList()
     }
 }
+
+var validators = (function(){
+
+    function present(value, key){
+        let res = (value.trim() !== "");
+        console.log(key, ": ", res)
+        if(!res){
+            const errorElement = document.getElementById(`${key}-error`);
+            errorElement.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)} is required.`;
+        }
+        return res;
+    }
+
+    function emailFormat(value, key){
+        let res = value.match(
+            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+        if(!res){
+            const errorElement = document.getElementById(`${key}-error`);
+            errorElement.textContent = `Invalid email format`;
+        }
+        return res;
+    }
+
+    return {
+        present,
+        emailFormat
+    }
+})();
 
 // utils module is used for functions like selection of list and grid view of cards
 var utils = (function(){
@@ -140,7 +170,7 @@ var formModule = (function(){
      */
     function markRequiredFields() {
         Object.keys(validationConfig).forEach(field => {
-            if (validationConfig[field]) {
+            if (validationConfig[field].includes("present")) {
                 const label = document.getElementById(`required-${field}`);
                 if (label) label.textContent = '*';
             }
@@ -175,25 +205,28 @@ var formModule = (function(){
      */
     function handleForm(event) {
         event.preventDefault();
-    
+
         const fields = _getFormFields();
         _resetErrorMessages();
-    
+
         let isValid = true;
+
         for (let key in fields) {
-            if (validationConfig[key] && !fields[key]) {
-                isValid = false;
-                const errorElement = document.getElementById(`${key}-error`);
-                if (errorElement) {
-                    errorElement.textContent = `${key} is required.`;
+            const validations = validationConfig[key] || [];
+            for (let validation of validations) {
+                const validatorFn = validators[validation];
+                console.log()
+                if (validatorFn && !validatorFn(fields[key], key)) {
+                    isValid = false;
+                    break;
                 }
             }
         }
-    
+
         if (!isValid) return;
-    
+
         let appointments = appointmentModule.getAppointments();
-    
+
         if (editingAppointmentId) {
             const index = appointments.findIndex(app => app.id === editingAppointmentId);
             if (index !== -1) {
@@ -207,13 +240,14 @@ var formModule = (function(){
         } else {
             appointments.push({ id: Date.now(), ...fields });
         }
-    
+
         appointmentModule.setAppointments(appointments);
         form.reset();
         updateAvailableSlots();
         appointmentModule.reloadAppointmentList();
         utils.showToast("Appointment successfully booked!");
     }
+
     
     /**
      * Returns form field values as an object.
@@ -221,6 +255,7 @@ var formModule = (function(){
     function _getFormFields() {
         return {
             name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
             date: document.getElementById("date").value,
             doctor: document.getElementById("doctor").value,
             slot: document.getElementById("slot").value,
@@ -301,7 +336,6 @@ var formModule = (function(){
     
         docOptions.addEventListener("click", function (event) {
             event.stopPropagation()
-            // debugger
             if (event.target.classList.contains("doctor-option")) {
                 doctorInput.value = event.target.textContent;
                 updateAvailableSlots();
@@ -465,7 +499,6 @@ var appointmentModule = (function(){
      * @param {number} id - Appointment ID
      */
     function _deleteAppointment(id) {
-        debugger
         if (!confirm("Are you sure you want to delete this appointment?")) return;
     
         const appointments = getAppointments().filter(app => app.id !== id);
