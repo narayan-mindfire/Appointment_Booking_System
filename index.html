@@ -19,7 +19,7 @@
       <h2>Appointment Form</h2>
       <form id="myForm">
         <label class="form-label"><i class="fa-solid fa-user"></i> Name:<span id="required-name"></span><br><input type="text" id="name" /></label><br><span class="error-message" id="name-error"></span><br><br>
-        <label class="form-label"><i class="fa-solid fa-user"></i> Email:<span id="required-email"></span><br><input type="text" id="email" /></label><br><span class="error-message" id="email-error"></span><br><br>
+        <label class="form-label"><i class="fa-solid fa-envelope"></i> Email:<span id="required-email"></span><br><input type="text" id="email" /></label><br><span class="error-message" id="email-error"></span><br><br>
         <label class="form-label"><i class="fa-solid fa-calendar-days"></i> Date:<span id="required-date"></span><br><input type="date" id="date" /></label><br><span class="error-message" id="date-error"></span><br><br>
         <label class="form-label"><i class="fa-solid fa-stethoscope"></i> Doctor:<span id="required-doctor"></span><br>
           <input type="text" id="doctor">
@@ -27,10 +27,10 @@
           </div>
         </label><br><span class="error-message" id="doctor-error"></span><br><br>
         <label class="form-label"><i class="fa-solid fa-check-to-slot"></i> Slot:<span id="required-slot"></span><br>
-          <select id="slot">
-            <option value="">Select a slot</option>
-          </select>
+          <input type="text" id="slot" readonly placeholder="Select a slot" />
+          <div id="slot-options" class="slot-options hidden"></div>
         </label><br><span class="error-message" id="slot-error"></span><br><br>
+
         <label class="form-label">
           <i class="fa-solid fa-microscope"></i> Purpose:<span id="required-purpose"></span>
           <br><input type="text" id="purpose" />
@@ -55,8 +55,8 @@
             <option id="sPname" value="name">Sort by doctor patient name (A-Z)</option>
             <option id="sPname" value="nameR">Sort by doctor patient name (Z-A)</option>
           </select>
-          <button id="btn-half"><i class="fas fa-th-large"></i></button>
-          <button id="btn-full"><i class="fas fa-list"></i></button>
+          <button id="btn-half" title="grid view"><i class="fas fa-th-large"></i></button>
+          <button id="btn-full" title="list view"><i class="fas fa-list"></i></button>
         </div>
       </div>
       <div class="appointment-cards" id="appointment-cards"></div>

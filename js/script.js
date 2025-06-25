@@ -48,7 +48,7 @@ function initialize() {
     formModule.markRequiredFields();
     formModule.setDoctors();
     appointmentModule.reloadAppointmentList();
-    let gridSelected = localStorage.getItem("gridSelected");
+    gridSelected = localStorage.getItem("gridSelected");
     if(gridSelected === "true"){
         utils.selectGrid()
     }
@@ -124,12 +124,22 @@ var utils = (function(){
      * util function to display toast message
      * @param {string} message 
      */
-    function showToast(message) {
+    function showToast(message, type) {
         const toast = document.getElementById("toast-message");
         toast.textContent = message;
         toast.classList.remove("toast-hidden");
         toast.classList.add("toast-visible");
-
+        switch (type) {
+            case "success":
+                toast.style.backgroundColor = "green";
+                break;
+            case "warning": 
+                toast.style.backgroundColor = "orange";
+            case "error": 
+                toast.style.backgroundColor = "red";
+            default:
+                break;
+        }
         setTimeout(() => {
             toast.classList.remove("toast-visible");
             toast.classList.add("toast-hidden");
@@ -223,7 +233,10 @@ var formModule = (function(){
             }
         }
 
-        if (!isValid) return;
+        if (!isValid){
+            utils.showToast("Please input correct data and try again", "error")
+            return;
+        }
 
         let appointments = appointmentModule.getAppointments();
 
@@ -245,7 +258,7 @@ var formModule = (function(){
         form.reset();
         updateAvailableSlots();
         appointmentModule.reloadAppointmentList();
-        utils.showToast("Appointment successfully booked!");
+        utils.showToast("Appointment successfully booked!", "success");
     }
 
     
@@ -276,9 +289,11 @@ var formModule = (function(){
     function updateAvailableSlots() {
         const date = document.getElementById("date").value;
         const doctor = document.getElementById("doctor").value;
-        const slotSelect = document.getElementById("slot");
-    
-        slotSelect.innerHTML = '<option value="">Select a slot</option>';
+        const slotInput = document.getElementById("slot");
+        const slotOptionsDiv = document.getElementById("slot-options");
+        slotOptionsDiv.innerHTML = ""; 
+        slotOptionsDiv.classList.remove("hidden");
+
         if (!date || !doctor) return;
     
         const appointments = appointmentModule.getAppointments();
@@ -286,25 +301,25 @@ var formModule = (function(){
             .filter(appointment => appointment.date === date && appointment.doctor === doctor && appointment.id !== editingAppointmentId)
             .map(appointment => appointment.slot);
     
-        const todayStr = new Date().toISOString().split('T')[0];
-    
-        const availableSlots = slots.filter(slot => {
-            const isBooked = bookedSlots.includes(slot);
-            const isToday = date === todayStr;
-            return !isBooked && (!isToday || _isSlotAvailable(slot));
+        slots.forEach(slot => {
+            const button = document.createElement("button");
+            button.className = "slot-button";
+            button.textContent = slot;
+            const today = new Date();
+            const selectedDate = new Date(date);
+            const isToday = today.toDateString() === selectedDate.toDateString();
+
+            button.disabled = bookedSlots.includes(slot) || (isToday && !_isSlotAvailable(slot));
+            
+            if (!button.disabled) {
+                button.addEventListener("click", () => {
+                    slotInput.value = slot;
+                    slotOptionsDiv.classList.add("hidden");
+                });
+            }
+            slotOptionsDiv.appendChild(button);
         });
-    
-        if (availableSlots.length === 0) {
-            slotSelect.innerHTML = '<option value="">No slots available</option>';
-            return;
-        }
-    
-        availableSlots.forEach(slot => {
-            const option = document.createElement("option");
-            option.value = slot;
-            option.textContent = slot;
-            slotSelect.appendChild(option);
-        });
+
     }
     
     /**
@@ -499,12 +514,12 @@ var appointmentModule = (function(){
      * @param {number} id - Appointment ID
      */
     function _deleteAppointment(id) {
+        debugger
         if (!confirm("Are you sure you want to delete this appointment?")) return;
-    
         const appointments = getAppointments().filter(app => app.id !== id);
         setAppointments(appointments);
         reloadAppointmentList();
-        utils.showToast("Appointment deleted.");
+        utils.showToast("Appointment deleted.", "success");
     }
     
     /**
@@ -512,6 +527,7 @@ var appointmentModule = (function(){
      * @param {number} id - Appointment ID
      */
     function _editAppointment(id) {
+        utils.showToast("appointment set to edit", "success");
         window.scrollTo({
             top: 0,
             left: 0,
@@ -523,8 +539,8 @@ var appointmentModule = (function(){
         const allCards = document.querySelectorAll(".appointment-card");
         allCards.forEach(card => {
             const cardName = card.querySelector(".patient-name")?.textContent.trim();
-            const cardDate = card.querySelector(".detail-item:nth-child(1) .detail-value")?.textContent.trim(); // get date
-            const cardTime = card.querySelector(".detail-item:nth-child(2) .detail-value")?.textContent.trim(); // get slot
+            const cardDate = card.querySelector(".detail-item:nth-child(1) .detail-value")?.textContent.trim();
+            const cardTime = card.querySelector(".detail-item:nth-child(2) .detail-value")?.textContent.trim(); 
 
             if (
                 cardName === appointment.name &&
@@ -573,3 +589,21 @@ document.getElementById("date").addEventListener("change", formModule.updateAvai
 document.addEventListener('click', formModule.handleDoctorDropdownClick);
 doctor.addEventListener('click', formModule.handleDoctorInputFieldClick);
 document.getElementById('sort').addEventListener('change', utils.sortSetter);
+document.getElementById("slot").addEventListener("click", () => {
+    const date = document.getElementById("date").value;
+    const doctor = document.getElementById("doctor").value;
+    if (date && doctor) {
+        formModule.updateAvailableSlots();
+    } else {
+        utils.showToast("Please select doctor and date first.", "warning");
+    }
+});
+
+document.addEventListener("click", function (e) {
+    const slotInput = document.getElementById("slot");
+    const slotOptions = document.getElementById("slot-options");
+    if (!slotInput.contains(e.target) && !slotOptions.contains(e.target)) {
+        slotOptions.classList.add("hidden");
+    }
+});
+
