@@ -113,7 +113,6 @@ const formService = (function(){
      * @param {Event} event 
      */
     function handleForm(event) {
-        if(state.dontSubmit === true) return;
         event.preventDefault();
 
         const fields = _getFormFields();
@@ -143,6 +142,7 @@ const formService = (function(){
         if (state.editingAppointmentId) {
             const index = appointments.findIndex(app => app.id === state.editingAppointmentId);
             if (index !== -1) {
+                console.log(fields)
                 appointments[index] = { id: state.editingAppointmentId, ...fields };
                 state.editingAppointmentId = null;
                 form.querySelector("#submit").value = "Book Appointment";
@@ -166,6 +166,8 @@ const formService = (function(){
      * Returns form field values as an object.
      */
     function _getFormFields() {
+        console.log("get form fields called")
+        console.log(doctorEle.value)
         return {
             name: nameEle.value,
             email: emailEle.value,

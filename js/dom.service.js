@@ -29,7 +29,7 @@ function addAppointmentCard(appointment) {
         <div class="card-content">
             <div class="header-section">
                 <h3 class="patient-name" title="patient">${appointment.name}</h3>
-                <p class="doctorEle-info" ><span class="doctorEle-name" title="doctorEle"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctorEle}</span></p>
+                <p class="doctorEle-info" ><span class="doctorEle-name" title="doctorEle"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctor}</span></p>
             </div>
 
             <p class="purpose-info" title="purpose">${appointment.purpose}</p>

@@ -26,7 +26,6 @@ function registerEvents() {
   sortEle.addEventListener("change", utils.sortSetter);
   slotEle.addEventListener("click", formModule.handleSlot);
   document.addEventListener("click", (e) => {
-    state.dontSubmit = true;
     if (!slotEle.contains(e.target) && !slotOptionsEle.contains(e.target)) {
       slotOptionsEle.classList.add("hidden");
     }
