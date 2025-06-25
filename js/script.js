@@ -90,10 +90,29 @@ var utils = (function(){
         appointmentModule.reloadAppointmentList();
     }
 
+    /**
+     * util function to display toast message
+     * @param {string} message 
+     */
+    function showToast(message) {
+        const toast = document.getElementById("toast-message");
+        toast.textContent = message;
+        toast.classList.remove("toast-hidden");
+        toast.classList.add("toast-visible");
+
+        setTimeout(() => {
+            toast.classList.remove("toast-visible");
+            toast.classList.add("toast-hidden");
+        }, 3000); 
+        toast.textContent = "";
+    }
+
+
     return {
         selectGrid,
         selectList,
-        sortSetter
+        sortSetter,
+        showToast
     }
 })();
 
@@ -194,6 +213,7 @@ var formModule = (function(){
         form.reset();
         updateAvailableSlots();
         appointmentModule.reloadAppointmentList();
+        utils.showToast("Appointment successfully booked!");
     }
     
     /**
@@ -446,11 +466,13 @@ var appointmentModule = (function(){
      * @param {number} id - Appointment ID
      */
     function _deleteAppointment(id) {
+        debugger
         if (!confirm("Are you sure you want to delete this appointment?")) return;
     
         const appointments = getAppointments().filter(app => app.id !== id);
         setAppointments(appointments);
         reloadAppointmentList();
+        utils.showToast("Appointment deleted.");
     }
     
     /**
