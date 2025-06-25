@@ -104,7 +104,6 @@ var utils = (function(){
             toast.classList.remove("toast-visible");
             toast.classList.add("toast-hidden");
         }, 3000); 
-        toast.textContent = "";
     }
 
 
@@ -431,20 +430,20 @@ var appointmentModule = (function(){
         card.innerHTML = `
             <div class="card-content">
                 <div class="header-section">
-                    <h3 class="patient-name">${appointment.name}</h3>
-                    <p class="doctor-info"><span class="doctor-name"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctor}</span></p>
+                    <h3 class="patient-name" title="patient">${appointment.name}</h3>
+                    <p class="doctor-info" ><span class="doctor-name" title="doctor"><i class="fa-solid fa-stethoscope"></i> ${appointment.doctor}</span></p>
                 </div>
     
-                <p class="purpose-info">${appointment.purpose}</p>
+                <p class="purpose-info" title="purpose">${appointment.purpose}</p>
     
                 <div class="details-section">
                     <div class="detail-item">
-                        <span class="detail-label"> <i class="fa-solid fa-calendar-days"></i> DATE</span>
-                        <span class="detail-value">${appointment.date}</span>
+                        <span class="detail-label"> <i class="fa-solid fa-calendar-days" title="date"></i></span>
+                        <span class="detail-value" title="date">${appointment.date}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label"><i class="fa-solid fa-clock"></i> TIME</span>
-                        <span class="detail-value">${appointment.slot}</span>
+                        <span class="detail-label" title="time"><i class="fa-solid fa-clock "></i></span>
+                        <span class="detail-value" title="time">${appointment.slot}</span>
                     </div>
                 </div>
             </div>
@@ -487,6 +486,25 @@ var appointmentModule = (function(){
         });
         const appointments = getAppointments();
         const appointment = appointments.find(app => app.id === id);
+
+        const allCards = document.querySelectorAll(".appointment-card");
+        allCards.forEach(card => {
+            const cardName = card.querySelector(".patient-name")?.textContent.trim();
+            const cardDate = card.querySelector(".detail-item:nth-child(1) .detail-value")?.textContent.trim(); // get date
+            const cardTime = card.querySelector(".detail-item:nth-child(2) .detail-value")?.textContent.trim(); // get slot
+
+            if (
+                cardName === appointment.name &&
+                cardDate === appointment.date &&
+                cardTime === appointment.slot
+            ) {
+                console.log("found the card for : ", cardName, cardDate, cardTime)
+                card.classList.add("highlighted");
+            } else {
+                console.log("didnt find the appointment card")
+                card.classList.remove("highlighted");
+            }
+        });
     
         if (!appointment) return;
     
