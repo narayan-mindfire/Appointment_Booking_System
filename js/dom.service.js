@@ -1,6 +1,6 @@
 import { getAppointments, setAppointments } from "./storage.service.js";
 import state from "./states.js";
-import { slots } from "./constants.js";
+import { SLOTS } from "./constants.js";
 
 // accessing all DOM elements
 const form = document.getElementById('myForm');
@@ -81,7 +81,7 @@ function updateAvailableSlots() {
     const selectedDate = new Date(date);
     const isToday = today.toDateString() === selectedDate.toDateString();
 
-    slots.forEach(slot => {
+    SLOTS.forEach(slot => {
         const slotHour = Number(slot.split(":")[0]);
         const isDisabled = bookedSlots.includes(slot) || (isToday && slotHour <= today.getHours());
 

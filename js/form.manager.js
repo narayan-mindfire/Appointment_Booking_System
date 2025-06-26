@@ -1,7 +1,7 @@
-import { validationConfig, docs } from "./constants.js";
+import { VALIDATION_CONFIG, DOCS } from "./constants.js";
 import state from "./states.js";
 import { setAppointments, getAppointments} from "./storage.service.js";
-import {addAppointmentCard,updateAppointmentCount, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, appointmentCards, showToast, updateAvailableSlots} from "./dom.service.js";
+import {reloadAppointmentList, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, showToast, updateAvailableSlots} from "./dom.service.js";
 import { validationService } from "./validation.service.js";
 
 const validators = validationService();
@@ -28,8 +28,8 @@ const formService = (function(){
      * Displays asterisk for required fields.
      */
     function markRequiredFields() {
-        Object.keys(validationConfig).forEach(field => {
-            if (validationConfig[field].includes("present")) {
+        Object.keys(VALIDATION_CONFIG).forEach(field => {
+            if (VALIDATION_CONFIG[field].includes("present")) {
                 const label = document.getElementById(`required-${field}`);
                 if (label) label.textContent = '*';
             }
@@ -44,59 +44,6 @@ const formService = (function(){
         if (!doctorEle.contains(event.target)) {
             docList.style.display = "none";
         }
-    }
-
-    /**
-     * Load and render all appointments.
-     */
-    function reloadAppointmentList() {
-        const appointments = getAppointments();
-        console.log("at reload app list")
-        appointmentCards.innerHTML = "";
-
-        if(state.sortAppointmentsBy){
-            // all comparisions are done among strings for now
-            console.log("sorting by: ", state.sortAppointmentsBy)
-            
-            switch(state.sortAppointmentsBy){
-                case "date": 
-                    appointments.sort((a, b) => {
-                        return a["date"].localeCompare(b["date"]);
-                    });
-                    break;
-                case "dateR": 
-                    appointments.sort((a, b) => {
-                        return b["date"].localeCompare(a["date"]);
-                    });
-                    break;
-                case "doctor": 
-                    appointments.sort((a, b) => {
-                        return a["doctor"].toLowerCase().localeCompare(b["doctor"].toLowerCase());
-                    });
-                    break;
-                case "doctorR": 
-                    appointments.sort((a, b) => {
-                        return b["doctor"].toLowerCase().localeCompare(a["doctor"].toLowerCase());
-                    });
-                    break;
-                case "name": 
-                    appointments.sort((a, b) => {
-                        return a["name"].toLowerCase().localeCompare(b["name"].toLowerCase());
-                    });
-                    break;
-                case "nameR": 
-                    appointments.sort((a, b) => {
-                        return b["name"].toLowerCase().localeCompare(a["name"].toLowerCase());
-                    });
-                    break;
-            }
-        }
-
-        appointments.forEach(app => {
-            addAppointmentCard(app);
-        });
-
-        updateAppointmentCount();
     }
 
     /**
@@ -121,7 +68,7 @@ const formService = (function(){
         let isValid = true;
 
         for (let key in fields) {
-            const validations = validationConfig[key] || [];
+            const validations = VALIDATION_CONFIG[key] || [];
             for (let validation of validations) {
                 const validatorFn = validators[validation];
                 console.log()
@@ -239,7 +186,7 @@ const formService = (function(){
      * Load doctors into dropdown with search filter.
      */
     function setDoctors() {
-        _renderDoctorOptions(docs);
+        _renderDoctorOptions(DOCS);
     
         doctor.addEventListener("input", function () {
             const filteredDocs = docs.filter(doc =>

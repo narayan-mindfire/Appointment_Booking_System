@@ -1,5 +1,5 @@
 // configuration for form validation: array for each field will contain the validation that field will go through
-const validationConfig = {
+const VALIDATION_CONFIG = {
     "name": ["present"],
     "email": ["present", "emailFormat"],
     "date": ["present"],
@@ -9,7 +9,7 @@ const validationConfig = {
 }
 
 // doctor list
-const docs = [
+const DOCS = [
   "Aarya Sharma",
   "Rohan Mehta",
   "Meera Nair",
@@ -33,6 +33,6 @@ const docs = [
 ];
 
 // global variables
-const slots = ["10:00", "11:00", "12:00", "1:00"];
+const SLOTS = ["10:00", "11:00", "12:00", "1:00"];
 
-export { validationConfig, docs, slots };
+export { VALIDATION_CONFIG, DOCS, SLOTS };
