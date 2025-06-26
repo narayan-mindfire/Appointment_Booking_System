@@ -1,7 +1,7 @@
-import { validationConfig, docs, slots } from "./constants.js";
+import { validationConfig, docs } from "./constants.js";
 import state from "./states.js";
 import { setAppointments, getAppointments} from "./storage.service.js";
-import {addAppointmentCard, updateAppointmentCount, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, appointmentCards, showToast} from "./dom.service.js";
+import {addAppointmentCard,updateAppointmentCount, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, appointmentCards, showToast, updateAvailableSlots} from "./dom.service.js";
 import { validationService } from "./validation.service.js";
 
 const validators = validationService();
@@ -40,7 +40,7 @@ const formService = (function(){
      * Handles doctor dropdown toggle visibility.
      */
     function handleDoctorDropdownClick(event) {
-        doctorSelectedRecently = false;
+        // doctorSelectedRecently = false;
         if (!doctorEle.contains(event.target)) {
             docList.style.display = "none";
         }
@@ -185,43 +185,38 @@ const formService = (function(){
         document.querySelectorAll(".error-message").forEach(ele => ele.textContent = "");
     }
     
-    /**
-     * Populates available time slots based on selected date and doctor.
-     */
-    function updateAvailableSlots() {
-        const date = dateEle.value;
-        const doctorVal = doctor.value;
-        const slotInput = slotEle;
-        slotOptionsEle.innerHTML = ""; 
-        slotOptionsEle.classList.remove("hidden");
+    // /**
+    //  * Populates available time slots based on selected date and doctor.
+    //  */
+    // function updateAvailableSlots() {
+    //     const date = dateEle.value;
+    //     const doctorVal = doctorEle.value;
 
-        if (!date || !doctorVal) return;
-    
-        const appointments = getAppointments();
-        const bookedSlots = appointments
-            .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
-            .map(appointment => appointment.slot);
-    
-        slots.forEach(slot => {
-            const button = document.createElement("button");
-            button.className = "slot-button";
-            button.textContent = slot;
-            const today = new Date();
-            const selectedDate = new Date(date);
-            const isToday = today.toDateString() === selectedDate.toDateString();
+    //     slotEle.innerHTML = `<option value="">Select a time slot</option>`;
 
-            button.disabled = bookedSlots.includes(slot) || (isToday && !_isSlotAvailable(slot));
-            
-            if (!button.disabled) {
-                button.addEventListener("click", () => {
-                    slotInput.value = slot;
-                    slotOptionsEle.classList.add("hidden");
-                });
-            }
-            slotOptionsEle.appendChild(button);
-        });
+    //     if (!date || !doctorVal) return;
 
-    }
+    //     const appointments = getAppointments();
+    //     const bookedSlots = appointments
+    //         .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
+    //         .map(appointment => appointment.slot);
+
+    //     const today = new Date();
+    //     const selectedDate = new Date(date);
+    //     const isToday = today.toDateString() === selectedDate.toDateString();
+
+    //     slots.forEach(slot => {
+    //         const slotHour = Number(slot.split(":")[0]);
+    //         const isDisabled = bookedSlots.includes(slot) || (isToday && slotHour <= today.getHours());
+
+    //         if (!isDisabled) {
+    //             const option = document.createElement("option");
+    //             option.value = slot;
+    //             option.textContent = slot;
+    //             slotEle.appendChild(option);
+    //         }
+    //     });
+    // }
 
     function handleOutsideClick(e){
         doctorSelectedRecently = true;
@@ -280,26 +275,13 @@ const formService = (function(){
         });
     }
 
-    function handleSlot() {
-        debugger
-        const date = dateEle.value;
-        const doctor = doctorEle.value;
-        if (date && doctor) {
-            updateAvailableSlots();
-        } else {
-            showToast("Please select doctor and date first.", "warning");
-        }
-    }
-
     return {
         setMinDateForInput,
         markRequiredFields,
         handleDoctorDropdownClick,
         handleDoctorInputFieldClick,
-        updateAvailableSlots,
         handleForm,
         setDoctors,
-        handleSlot,
         handleOutsideClick
     }
 })

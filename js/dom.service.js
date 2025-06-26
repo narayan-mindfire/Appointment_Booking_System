@@ -2,6 +2,7 @@ import { getAppointments, setAppointments } from "./storage.service.js";
 import state from "./states.js";
 import { slots } from "./constants.js";
 
+// accessing all DOM elements
 const form = document.getElementById('myForm');
 const doctorEle = document.getElementById('doctor');
 const btnHalf = document.getElementById('btn-half');
@@ -19,7 +20,7 @@ const slotOptionsEle = document.getElementById("slot-options");
 const totalAppEle = document.getElementById("total-appointments");
 
 /**
- * function to add appointment cards in DOM
+ * function to add appointment cards in DOMf
  * @param {object} appointment 
  */
 function addAppointmentCard(appointment) {
@@ -64,10 +65,10 @@ function addAppointmentCard(appointment) {
  */
 function updateAvailableSlots() {
     const date = dateEle.value;
-    const doctorVal = doctor.value;
-    const slotInput = slotEle;
-    slotOptionsEle.innerHTML = ""; 
-    slotOptionsEle.classList.remove("hidden");
+    const doctorVal = doctorEle.value;
+
+    // Clear old options
+    slotEle.innerHTML = `<option value="">Select a time slot</option>`;
 
     if (!date || !doctorVal) return;
 
@@ -76,25 +77,21 @@ function updateAvailableSlots() {
         .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
         .map(appointment => appointment.slot);
 
+    const today = new Date();
+    const selectedDate = new Date(date);
+    const isToday = today.toDateString() === selectedDate.toDateString();
+
     slots.forEach(slot => {
-        const button = document.createElement("button");
-        button.className = "slot-button";
-        button.textContent = slot;
-        const today = new Date();
-        const selectedDate = new Date(date);
-        const isToday = today.toDateString() === selectedDate.toDateString();
+        const slotHour = Number(slot.split(":")[0]);
+        const isDisabled = bookedSlots.includes(slot) || (isToday && slotHour <= today.getHours());
 
-        button.disabled = bookedSlots.includes(slot) || (isToday && !_isSlotAvailable(slot));
-        
-        if (!button.disabled) {
-            button.addEventListener("click", () => {
-                slotInput.value = slot;
-                slotOptionsEle.classList.add("hidden");
-            });
+        if (!isDisabled) {
+            const option = document.createElement("option");
+            option.value = slot;
+            option.textContent = slot;
+            slotEle.appendChild(option);
         }
-        slotOptionsEle.appendChild(button);
     });
-
 }
 
 /**
@@ -145,7 +142,6 @@ function editAppointment(id) {
     form.querySelector("#submit").value = "Update Appointment";
 }
 
-
 /**
  * Updates the total appointment count.
  */
@@ -176,14 +172,14 @@ function reloadAppointmentList() {
                     return b["date"].localeCompare(a["date"]);
                 });
                 break;
-            case "doctorEle": 
+            case "doctor": 
                 appointments.sort((a, b) => {
-                    return a["doctorEle"].toLowerCase().localeCompare(b["doctorEle"].toLowerCase());
+                    return a["doctor"].toLowerCase().localeCompare(b["doctor"].toLowerCase());
                 });
                 break;
             case "doctorR": 
                 appointments.sort((a, b) => {
-                    return b["doctorEle"].toLowerCase().localeCompare(a["doctorEle"].toLowerCase());
+                    return b["doctor"].toLowerCase().localeCompare(a["doctor"].toLowerCase());
                 });
                 break;
             case "name": 
@@ -262,5 +258,6 @@ export {
     updateAppointmentCount,
     reloadAppointmentList,
     showToast,
-    deleteAppointment
+    deleteAppointment,
+    updateAvailableSlots
 };

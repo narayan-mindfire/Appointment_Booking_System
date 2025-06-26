@@ -1,3 +1,4 @@
+// This service provides validation methods for form inputs.
 const validationService = () => ({
   present(value, key) {
     let res = (value.trim() !== "");

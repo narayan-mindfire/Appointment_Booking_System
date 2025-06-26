@@ -1,4 +1,4 @@
-import { btnFull, btnHalf, dateEle, doctorEle, form, slotEle, slotOptionsEle, sortEle } from "./dom.service.js";
+import { btnFull, btnHalf, dateEle, doctorEle, form, sortEle } from "./dom.service.js";
 import state from "./states.js";
 import { utilService } from "./logic.service.js";
 import { formService } from "./form.manager.js";
@@ -7,7 +7,9 @@ import { formService } from "./form.manager.js";
 const utils = utilService();
 const formModule = formService();
 
-// all the events in app
+/**
+ * all application events are registered here
+ */
 function registerEvents() {
   btnFull.addEventListener("click", () => {
     state.gridSelected = false;
@@ -15,7 +17,7 @@ function registerEvents() {
   });
 
   btnHalf.addEventListener("click", () => {
-    state.gridSelected = false;
+    state.gridSelected = true;
     utils.selectGrid();
   });
 
@@ -25,12 +27,6 @@ function registerEvents() {
   document.addEventListener("click", formModule.handleDoctorDropdownClick);
   doctorEle.addEventListener("click", formModule.handleDoctorInputFieldClick);
   sortEle.addEventListener("change", utils.sortSetter);
-  slotEle.addEventListener("click", formModule.handleSlot);
-  document.addEventListener("click", (e) => {
-    if (!slotEle.contains(e.target) && !slotOptionsEle.contains(e.target)) {
-      slotOptionsEle.classList.add("hidden");
-    }
-  });
 }
 
 export { registerEvents };
