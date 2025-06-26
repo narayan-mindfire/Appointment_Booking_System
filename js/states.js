@@ -4,7 +4,7 @@ import { saveData } from "./storage.service.js";
 const state = {
     editingAppointmentId : null,
     sortAppointmentsBy : null,
-    isGridSelected : false,
+    isGridSelected : "true",
     appointments: [],
     setAppointments(appointments){
         this.appointments = appointments;

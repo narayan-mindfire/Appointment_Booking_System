@@ -18,6 +18,7 @@ const purposeEle = document.getElementById("purpose");
 const slotOptionsEle = document.getElementById("slot-options");
 const totalAppEle = document.getElementById("total-appointments");
 const appointmentListContainer = document.getElementById("appointment-list-container");
+const appointmentTable = document.getElementById('appointment-table')
 
 /**
  * function to add appointment cards in DOMf
@@ -61,6 +62,35 @@ function addAppointmentCard(appointment) {
 }
 
 /**
+ * Add appointment to the table view
+ * @param {object} appointment
+ */
+function addAppointmentRow(appointment) {
+  const tbody = document.getElementById("appointment-table-body");
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${appointment.name}</td>
+    <td>${appointment.email}</td>
+    <td>${appointment.doctor}</td>
+    <td>${appointment.date}</td>
+    <td>${appointment.slot}</td>
+    <td>${appointment.purpose}</td>
+    <td>
+      <button class="edit">Edit</button>
+      <button class="delete">Delete</button>
+    </td>
+  `;
+
+  row.querySelector(".edit").addEventListener("click", () => editAppointment(appointment.id));
+  row.querySelector(".delete").addEventListener("click", () => deleteAppointment(appointment.id));
+
+  tbody.appendChild(row);
+}
+
+
+/**
  * checks and udpdates available slots
  */
 function updateAvailableSlots() {
@@ -99,48 +129,71 @@ function updateAvailableSlots() {
  * @param {number} id - Appointment ID
  */
 function editAppointment(id) {
-    showToast("appointment set to edit", "success");
+    showToast("Appointment set to edit", "success");
     window.scrollTo({
         top: 0,
         left: 0,
         behavior: 'smooth'
     });
+
     const appointments = state.appointments;
     const appointment = appointments.find(app => app.id === id);
+    if (!appointment) return;
 
-    const allCards = document.querySelectorAll(".appointment-card");
-    allCards.forEach(card => {
+    state.editingAppointmentId = id;
+
+    // highlight card view
+    document.querySelectorAll(".appointment-card").forEach(card => {
         const cardName = card.querySelector(".patient-name")?.textContent.trim();
         const cardDate = card.querySelector(".detail-item:nth-child(1) .detail-value")?.textContent.trim();
-        const cardTime = card.querySelector(".detail-item:nth-child(2) .detail-value")?.textContent.trim(); 
+        const cardTime = card.querySelector(".detail-item:nth-child(2) .detail-value")?.textContent.trim();
 
         if (
             cardName === appointment.name &&
             cardDate === appointment.date &&
             cardTime === appointment.slot
         ) {
-            console.log("found the card for : ", cardName, cardDate, cardTime)
             card.classList.add("highlighted");
         } else {
-            console.log("didnt find the appointment card")
             card.classList.remove("highlighted");
         }
     });
 
-    if (!appointment) return;
+    // highlight table row (optional)
+    document.querySelectorAll("#appointment-table-body tr").forEach(row => {
+        const cells = row.getElementsByTagName("td");
+        const name = cells[0]?.textContent.trim();
+        const email = cells[1]?.textContent.trim();
+        const doctor = cells[2]?.textContent.trim();
+        const date = cells[3]?.textContent.trim();
+        const slot = cells[4]?.textContent.trim();
 
-    state.editingAppointmentId = id;
+        if (
+            name === appointment.name &&
+            email === appointment.email &&
+            doctor === appointment.doctor &&
+            date === appointment.date &&
+            slot === appointment.slot
+        ) {
+            row.classList.add("highlighted");
+        } else {
+            row.classList.remove("highlighted");
+        }
+    });
 
+    // pre-fill form
     nameEle.value = appointment.name;
     emailEle.value = appointment.email;
     dateEle.value = appointment.date;
-    doctorEle.value = appointment.doctorEle;
-    updateAvailableSlots(); // Updating before setting slot to reflect correct availability
+    doctorEle.value = appointment.doctor;
+    updateAvailableSlots(); // must come before setting slot
     slotEle.value = appointment.slot;
     purposeEle.value = appointment.purpose;
+
     resetErrorMessages();
     form.querySelector("#submit").value = "Update Appointment";
 }
+
 
 /**
  * Clears all validation error messages.
@@ -164,6 +217,8 @@ function reloadAppointmentList() {
     console.log(appointments)
     console.log("at reload app list")
     appointmentCards.innerHTML = "";
+    document.getElementById("appointment-table-body").innerHTML = "";
+
 
     if(state.sortAppointmentsBy){
         // all comparisions are done among strings for now
@@ -205,6 +260,7 @@ function reloadAppointmentList() {
 
     appointments.forEach(app => {
         addAppointmentCard(app);
+        addAppointmentRow(app);
     });
 
     updateAppointmentCount();
@@ -240,11 +296,17 @@ function showToast(message, type = "success") {
  */
 function deleteAppointment(id) {
     if (!confirm("Are you sure you want to delete this appointment?")) return;
-    const appointments = state.appointments.filter(app => app.id !== id);
-    state.setAppointments(appointments);
+
+    const updatedAppointments = state.appointments.filter(app => app.id !== id);
+    state.setAppointments(updatedAppointments);
+
+    appointmentCards.innerHTML = "";
+    document.getElementById("appointment-table-body").innerHTML = "";
+
     reloadAppointmentList();
     showToast("Appointment deleted.", "success");
 }
+
 
 export {
     form,
@@ -263,7 +325,9 @@ export {
     slotOptionsEle,
     totalAppEle,
     appointmentListContainer,
+    appointmentTable,
     addAppointmentCard,
+    addAppointmentRow,
     updateAppointmentCount,
     reloadAppointmentList,
     showToast,

@@ -27,6 +27,15 @@ function registerEvents() {
   document.addEventListener("click", formModule.handleDoctorDropdownClick);
   doctorEle.addEventListener("click", formModule.handleDoctorInputFieldClick);
   sortEle.addEventListener("change", utils.sortSetter);
+
+  window.addEventListener("resize", () => {
+  if (window.innerWidth <= 768) {
+    document.getElementById("appointment-cards").classList.remove("hidden");
+    document.getElementById("appointment-table").classList.add("hidden");
+    state.setGrid("true");
+  }
+});
+
 }
 
 export { registerEvents };
