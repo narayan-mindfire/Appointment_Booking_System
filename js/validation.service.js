@@ -1,6 +1,6 @@
 // This service provides validation methods for form inputs.
 const validationService = () => ({
-  present(value, key) {
+  isRequired(value, key) {
     let res = (value.trim() !== "");
     if (!res) {
       const errorElement = document.getElementById(`${key}-error`);
@@ -9,14 +9,14 @@ const validationService = () => ({
     return res;
   },
 
-  emailFormat(value, key) {
+  isEmailFormat(value, key) {
     const res = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     if (!res) {
-      const errorElement = document.getElementById(`${key}-error`);
-      if (errorElement) errorElement.textContent = `Invalid email format`;
+        const errorElement = document.getElementById(`${key}-error`);
+        if (errorElement) errorElement.textContent = `Invalid email format`;
+        }
+        return res;
     }
-    return res;
-  }
 });
 
 export { validationService };

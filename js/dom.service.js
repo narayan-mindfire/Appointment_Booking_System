@@ -138,8 +138,15 @@ function editAppointment(id) {
     updateAvailableSlots(); // Updating before setting slot to reflect correct availability
     slotEle.value = appointment.slot;
     purposeEle.value = appointment.purpose;
-
+    resetErrorMessages();
     form.querySelector("#submit").value = "Update Appointment";
+}
+
+/**
+     * Clears all validation error messages.
+     */
+function resetErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(ele => ele.textContent = "");
 }
 
 /**
@@ -259,5 +266,6 @@ export {
     reloadAppointmentList,
     showToast,
     deleteAppointment,
-    updateAvailableSlots
+    updateAvailableSlots,
+    resetErrorMessages
 };

@@ -1,10 +1,10 @@
 // configuration for form validation: array for each field will contain the validation that field will go through
 const VALIDATION_CONFIG = {
-    "name": ["present"],
-    "email": ["present", "emailFormat"],
-    "date": ["present"],
-    "doctor": ["present"],
-    "slot": ["present"],
+    "name": ["isRequired"],
+    "email": ["isRequired", "isemailFormat"],
+    "date": ["isRequired"],
+    "doctor": ["isRequired"],
+    "slot": ["isRequired"],
     "purpose": [],
 }
 

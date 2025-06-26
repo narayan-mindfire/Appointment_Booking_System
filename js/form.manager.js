@@ -1,14 +1,14 @@
 import { VALIDATION_CONFIG, DOCS } from "./constants.js";
 import state from "./states.js";
 import { setAppointments, getAppointments} from "./storage.service.js";
-import {reloadAppointmentList, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, showToast, updateAvailableSlots} from "./dom.service.js";
+import {resetErrorMessages, reloadAppointmentList, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, showToast, updateAvailableSlots} from "./dom.service.js";
 import { validationService } from "./validation.service.js";
 
 const validators = validationService();
+let doctorSelectedRecently = false;
 
 const formService = (function(){
     // local variable
-    let doctorSelectedRecently = false;
 
     /**
      * Sets the minimum date for the appointment date input to today.
@@ -29,7 +29,7 @@ const formService = (function(){
      */
     function markRequiredFields() {
         Object.keys(VALIDATION_CONFIG).forEach(field => {
-            if (VALIDATION_CONFIG[field].includes("present")) {
+            if (VALIDATION_CONFIG[field].includes("isRequired")) {
                 const label = document.getElementById(`required-${field}`);
                 if (label) label.textContent = '*';
             }
@@ -63,7 +63,7 @@ const formService = (function(){
         event.preventDefault();
 
         const fields = _getFormFields();
-        _resetErrorMessages();
+        resetErrorMessages();
 
         let isValid = true;
 
@@ -124,46 +124,7 @@ const formService = (function(){
             purpose: purposeEle.value
         };
     }
-    
-    /**
-     * Clears all validation error messages.
-     */
-    function _resetErrorMessages() {
-        document.querySelectorAll(".error-message").forEach(ele => ele.textContent = "");
-    }
-    
-    // /**
-    //  * Populates available time slots based on selected date and doctor.
-    //  */
-    // function updateAvailableSlots() {
-    //     const date = dateEle.value;
-    //     const doctorVal = doctorEle.value;
 
-    //     slotEle.innerHTML = `<option value="">Select a time slot</option>`;
-
-    //     if (!date || !doctorVal) return;
-
-    //     const appointments = getAppointments();
-    //     const bookedSlots = appointments
-    //         .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
-    //         .map(appointment => appointment.slot);
-
-    //     const today = new Date();
-    //     const selectedDate = new Date(date);
-    //     const isToday = today.toDateString() === selectedDate.toDateString();
-
-    //     slots.forEach(slot => {
-    //         const slotHour = Number(slot.split(":")[0]);
-    //         const isDisabled = bookedSlots.includes(slot) || (isToday && slotHour <= today.getHours());
-
-    //         if (!isDisabled) {
-    //             const option = document.createElement("option");
-    //             option.value = slot;
-    //             option.textContent = slot;
-    //             slotEle.appendChild(option);
-    //         }
-    //     });
-    // }
 
     function handleOutsideClick(e){
         doctorSelectedRecently = true;
@@ -173,23 +134,13 @@ const formService = (function(){
     }
     
     /**
-     * Checks if a slot is available today (based on current time).
-     * @param {string} slot 
-     * @returns {boolean}
-     */
-    function _isSlotAvailable(slot) {
-        const slotHour = Number(slot.split(":")[0]);
-        return slotHour > new Date().getHours();
-    }
-    
-    /**
      * Load doctors into dropdown with search filter.
      */
     function setDoctors() {
         _renderDoctorOptions(DOCS);
     
         doctor.addEventListener("input", function () {
-            const filteredDocs = docs.filter(doc =>
+            const filteredDocs = DOCS.filter(doc =>
                 doc.toLowerCase().includes(this.value.toLowerCase())
             );
             docList.style.display = "block"
