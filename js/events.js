@@ -12,12 +12,12 @@ const formModule = formService();
  */
 function registerEvents() {
   btnFull.addEventListener("click", () => {
-    state.gridSelected = false;
+    state.isGridSelected = false;
     utils.selectList();
   });
 
   btnHalf.addEventListener("click", () => {
-    state.gridSelected = true;
+    state.isGridSelected = true;
     utils.selectGrid();
   });
 

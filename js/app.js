@@ -19,8 +19,8 @@ function initialize() {
     formModule.markRequiredFields();
     formModule.setDoctors();
     reloadAppointmentList();
-    state.gridSelected = getGrid();
-    state.gridSelected === true ? utils.selectGrid() : utils.selectList()
+    state.isGridSelected = getGrid();
+    state.isGridSelected === true ? utils.selectGrid() : utils.selectList()
 }
 // Initialize on load
 initialize();

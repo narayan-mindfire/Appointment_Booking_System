@@ -26,7 +26,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
   padding: 30px;
   background-color: #000;
 }
@@ -35,10 +34,16 @@ body {
 .appointment-list {
   background-color: #fff;
   padding: 25px;
-  flex: 45%;
   border-radius: 10px;
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.form-container{
+  width: 35%;
+}
+.appointment-list{
+  width: 60%;
 }
 
 form input,
@@ -389,6 +394,11 @@ form select:focus {
     font-size: 20px;
   }
 
+  .form-container, .appointment-list{
+    width: 100%;
+    max-height: unset;
+  }
+
  .appointment-cards {
     display: flex;
     flex-wrap: wrap;
@@ -401,7 +411,7 @@ form select:focus {
     scroll-snap-align: unset;
   }
   .appointment-card {
-    width: 48% !important; 
+    width: 100%; 
     background-color: #fff;
     border-radius: 10px;
     padding: 10px; 
@@ -424,6 +434,10 @@ form select:focus {
     font-size: 15px; 
     font-weight: 700; 
     color: #000;
+  }
+
+  .content{
+    gap: 20px;
   }
 
   .doctor-info {

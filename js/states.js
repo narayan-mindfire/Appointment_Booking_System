@@ -2,7 +2,7 @@
 const state = {
     editingAppointmentId : null,
     sortAppointmentsBy : null,
-    gridSelected : false,
+    isGridSelected : false,
 }
 
 export  default state;
