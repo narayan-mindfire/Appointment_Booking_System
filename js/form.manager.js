@@ -1,8 +1,8 @@
 import { VALIDATION_CONFIG, DOCS } from "./constants.js";
 import state from "./states.js";
-import { setAppointments, getAppointments} from "./storage.service.js";
 import {resetErrorMessages, reloadAppointmentList, doctorEle, form, dateEle, slotEle, emailEle, docList, nameEle, purposeEle, slotOptionsEle, showToast, updateAvailableSlots} from "./dom.service.js";
 import { validationService } from "./validation.service.js";
+import { saveData } from "./storage.service.js";
 
 const validators = validationService();
 let doctorSelectedRecently = false;
@@ -84,7 +84,7 @@ const formService = (function(){
             return;
         }
 
-        let appointments = getAppointments();
+        let appointments = state.appointments || [];
 
         if (state.editingAppointmentId) {
             const index = appointments.findIndex(app => app.id === state.editingAppointmentId);
@@ -101,7 +101,8 @@ const formService = (function(){
             appointments.push({ id: Date.now(), ...fields });
         }
 
-        setAppointments(appointments);
+        state.setAppointments(appointments);
+        saveData("appointments", appointments);
         form.reset();
         updateAvailableSlots();
         reloadAppointmentList();

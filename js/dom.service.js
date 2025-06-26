@@ -1,4 +1,3 @@
-import { getAppointments, setAppointments } from "./storage.service.js";
 import state from "./states.js";
 import { SLOTS } from "./constants.js";
 
@@ -18,6 +17,7 @@ const emailEle = document.getElementById("email");
 const purposeEle = document.getElementById("purpose");
 const slotOptionsEle = document.getElementById("slot-options");
 const totalAppEle = document.getElementById("total-appointments");
+const appointmentListContainer = document.getElementById("appointment-list-container");
 
 /**
  * function to add appointment cards in DOMf
@@ -72,7 +72,7 @@ function updateAvailableSlots() {
 
     if (!date || !doctorVal) return;
 
-    const appointments = getAppointments();
+    const appointments = state.appointments;
     const bookedSlots = appointments
         .filter(appointment => appointment.date === date && appointment.doctor === doctorVal && appointment.id !== state.editingAppointmentId)
         .map(appointment => appointment.slot);
@@ -105,7 +105,7 @@ function editAppointment(id) {
         left: 0,
         behavior: 'smooth'
     });
-    const appointments = getAppointments();
+    const appointments = state.appointments;
     const appointment = appointments.find(app => app.id === id);
 
     const allCards = document.querySelectorAll(".appointment-card");
@@ -143,8 +143,8 @@ function editAppointment(id) {
 }
 
 /**
-     * Clears all validation error messages.
-     */
+ * Clears all validation error messages.
+ */
 function resetErrorMessages() {
     document.querySelectorAll(".error-message").forEach(ele => ele.textContent = "");
 }
@@ -153,14 +153,15 @@ function resetErrorMessages() {
  * Updates the total appointment count.
  */
 function updateAppointmentCount() {
-    totalAppEle.textContent = getAppointments().length;
+    totalAppEle.textContent = state.appointments.length;
 }
 
 /**
  * Load and render all appointments.
  */
 function reloadAppointmentList() {
-    const appointments = getAppointments();
+    const appointments = state.appointments;
+    console.log(appointments)
     console.log("at reload app list")
     appointmentCards.innerHTML = "";
 
@@ -239,8 +240,8 @@ function showToast(message, type = "success") {
  */
 function deleteAppointment(id) {
     if (!confirm("Are you sure you want to delete this appointment?")) return;
-    const appointments = getAppointments().filter(app => app.id !== id);
-    setAppointments(appointments);
+    const appointments = state.appointments.filter(app => app.id !== id);
+    state.setAppointments(appointments);
     reloadAppointmentList();
     showToast("Appointment deleted.", "success");
 }
@@ -261,6 +262,7 @@ export {
     purposeEle,
     slotOptionsEle,
     totalAppEle,
+    appointmentListContainer,
     addAppointmentCard,
     updateAppointmentCount,
     reloadAppointmentList,

@@ -1,36 +1,17 @@
 /**
- * Get appointments from localStorage.
- * @returns {Object[]} appointments
+ * Get data from localStorage.
  */
-function getAppointments() {
-    const data = localStorage.getItem("appointments");
+function loadData(key) {
+    const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : [];
 }
 
 /**
- * Saves appointments to localStorage.
- * @param {Object[]} appointments 
+ * Saves data to localStorage.
  */
-function setAppointments(appointments) {
-    localStorage.setItem("appointments", JSON.stringify(appointments));
+function saveData(key, data) {
+    console.log("setting data for key: ", key, " with data: ", data);
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
-/**
- * gets saved grid data
- * @returns 
- */
-function getGrid() {
-  const data = localStorage.getItem("state.gridSelected");
-  return data ? JSON.parse(data) : false;
-}
-
-/**
- * sets grid data in local storages
- * @param {boolean} value 
- */
-function setGrid(value){
-    console.log("setting grid to : ", value)
-    localStorage.setItem("state.gridSelected", value);
-}
-
-export {setAppointments, getAppointments, getGrid, setGrid}
+export { saveData, loadData }
